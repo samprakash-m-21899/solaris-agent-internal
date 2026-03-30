@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solaris Endpoint Agent — Competitor Deep Dive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0f1a;
+  --surface: #111827;
+  --surface2: #1a2236;
+  --border: #243049;
+  --text: #d1d9e6;
+  --text-dim: #7b8ba6;
+  --heading: #f0f4fa;
+  --accent: #38bdf8;
+  --accent2: #a78bfa;
+  --green: #34d399;
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --orange: #fb923c;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* ── NAV ── */
+nav { position: sticky; top: 0; z-index: 100; background: rgba(11,15,26,.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+nav .inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; height: 56px; overflow-x: auto; }
+nav a { color: var(--text-dim); text-decoration: none; font-size: .82rem; font-weight: 500; white-space: nowrap; transition: color .2s; letter-spacing: .02em; }
+nav a:hover, nav a.active { color: var(--accent); }
+nav .logo { font-weight: 800; color: var(--heading); font-size: 1rem; letter-spacing: -.02em; flex-shrink: 0; }
+nav .logo span { color: var(--accent); }
+
+/* ── HERO ── */
+.hero { max-width: 1200px; margin: 0 auto; padding: 5rem 2rem 3rem; }
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; color: var(--heading); line-height: 1.15; letter-spacing: -.03em; }
+.hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero .sub { font-size: 1.15rem; color: var(--text-dim); margin-top: 1rem; max-width: 700px; }
+.hero .badges { display: flex; gap: .75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+.badge { display: inline-flex; align-items: center; gap: .4rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: .35rem .9rem; font-size: .78rem; font-weight: 500; color: var(--text-dim); }
+.badge .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: var(--green); }
+.dot-red { background: var(--red); }
+.dot-yellow { background: var(--yellow); }
+
+/* ── SECTIONS ── */
+section { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+section + section { border-top: 1px solid var(--border); }
+h2 { font-size: 1.8rem; font-weight: 700; color: var(--heading); margin-bottom: 1rem; letter-spacing: -.02em; }
+h2 .num { color: var(--accent); font-weight: 800; margin-right: .3rem; }
+h3 { font-size: 1.25rem; font-weight: 600; color: var(--heading); margin: 2rem 0 .75rem; }
+h4 { font-size: 1rem; font-weight: 600; color: var(--accent2); margin: 1.5rem 0 .5rem; text-transform: uppercase; letter-spacing: .06em; font-size: .85rem; }
+p { margin-bottom: .75rem; }
+p.dim { color: var(--text-dim); font-size: .9rem; }
+
+/* ── CARDS ── */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.25rem; margin: 1.5rem 0; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: border-color .2s, transform .2s; }
+.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.card .title { font-weight: 700; color: var(--heading); font-size: 1.1rem; margin-bottom: .25rem; }
+.card .meta { font-size: .8rem; color: var(--text-dim); margin-bottom: .75rem; }
+.card .meta span { color: var(--accent); font-weight: 600; }
+.card ul { list-style: none; padding: 0; }
+.card li { padding: .25rem 0; padding-left: 1.2rem; position: relative; font-size: .9rem; }
+.card li::before { content: ''; position: absolute; left: 0; top: .65rem; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* ── TABLES ── */
+.tbl-wrap { overflow-x: auto; margin: 1.25rem 0; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+thead th { background: var(--surface2); color: var(--heading); font-weight: 600; text-align: left; padding: .7rem .9rem; border-bottom: 2px solid var(--border); white-space: nowrap; position: sticky; top: 0; }
+tbody td { padding: .6rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tbody tr:nth-child(even) { background: rgba(255,255,255,.015); }
+tbody tr:hover { background: rgba(56,189,248,.04); }
+td:first-child { font-weight: 600; color: var(--heading); white-space: nowrap; }
+.yes { color: var(--green); font-weight: 600; }
+.no { color: var(--red); font-weight: 600; }
+.partial { color: var(--yellow); font-weight: 600; }
+.na { color: var(--text-dim); }
+
+/* ── SPEC BLOCKS ── */
+.spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.spec { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem; }
+.spec .label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); font-weight: 600; margin-bottom: .25rem; }
+.spec .value { font-size: 1.3rem; font-weight: 700; color: var(--heading); }
+.spec .value.accent { color: var(--accent); }
+.spec .value.green { color: var(--green); }
+
+/* ── CALLOUT ── */
+.callout { background: var(--surface2); border-left: 4px solid var(--accent); border-radius: 0 10px 10px 0; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+.callout.warn { border-left-color: var(--yellow); }
+.callout.danger { border-left-color: var(--red); }
+.callout.success { border-left-color: var(--green); }
+.callout strong { color: var(--heading); }
+
+/* ── TIMELINE ── */
+.timeline { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.tl-item { position: relative; margin-bottom: 1.5rem; }
+.tl-item::before { content: ''; position: absolute; left: -2rem; top: .45rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); z-index: 1; }
+.tl-item.phase2::before { background: var(--accent2); }
+.tl-item.phase3::before { background: var(--green); }
+.tl-item .tl-title { font-weight: 700; color: var(--heading); font-size: 1rem; }
+.tl-item .tl-desc { font-size: .9rem; color: var(--text-dim); margin-top: .25rem; }
+
+/* ── FOOTER ── */
+footer { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; border-top: 1px solid var(--border); color: var(--text-dim); font-size: .82rem; text-align: center; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero { padding: 3rem 1rem 2rem; }
+  section { padding: 2rem 1rem; }
+  .cards { grid-template-columns: 1fr; }
+  .spec-grid { grid-template-columns: repeat(2, 1fr); }
+  nav .inner { gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <div class="logo">Solaris<span>Agent</span>Intel</div>
+    <a href="#overview">Overview</a>
+    <a href="#bigfix">HCL BigFix</a>
+    <a href="#tanium">Tanium</a>
+    <a href="#ivanti">Ivanti</a>
+    <a href="#comparison">Comparison</a>
+    <a href="#gaps">Gap Analysis</a>
+    <a href="#recommendation">Recommendation</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Solaris Endpoint Agent<br><span>Competitor Deep Dive</span></h1>
+  <p class="sub">A comprehensive analysis of the only three endpoint management products that support Oracle Solaris — how they built their agents, what features they provide, and what opportunities remain.</p>
+  <div class="badges">
+    <div class="badge"><div class="dot dot-green"></div>3 products support Solaris</div>
+    <div class="badge"><div class="dot dot-red"></div>12+ products do NOT</div>
+    <div class="badge"><div class="dot dot-yellow"></div>All agents written in C/C++</div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <h2><span class="num">01</span> Market Overview</h2>
+  <p>Out of 15+ major endpoint management platforms evaluated, only <strong>HCL BigFix</strong>, <strong>Tanium</strong>, and <strong>Ivanti Endpoint Manager</strong> provide native agent support for Oracle Solaris. Every other product — Microsoft Intune, NinjaOne, CrowdStrike Falcon, Atera, Datto RMM, Workspace ONE, Action1, Automox, Pulseway, SyncroMSP, Hexnode — has zero Solaris support.</p>
+
+  <div class="spec-grid">
+    <div class="spec"><div class="label">Products with Solaris Agent</div><div class="value accent">3</div></div>
+    <div class="spec"><div class="label">Products without</div><div class="value" style="color:var(--red)">12+</div></div>
+    <div class="spec"><div class="label">Agent Language (All 3)</div><div class="value green">C / C++</div></div>
+    <div class="spec"><div class="label">Architectures</div><div class="value">SPARC + x86-64</div></div>
+  </div>
+
+  <h3>Why Only C/C++ Works for Solaris Agents</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Reason</th><th>Explanation</th></tr></thead>
+      <tbody>
+        <tr><td>Dual architecture</td><td>Must compile natively for both SPARC and x86-64. Go/Rust/.NET have no or limited SPARC support</td></tr>
+        <tr><td>Zero runtime</td><td>Links only against libc + libsocket (always present). No JVM, no .NET CLR, no Go runtime needed</td></tr>
+        <tr><td>All OS APIs are C</td><td>kstat, DTrace, ZFS, Zones, SMF, Doors, Event Ports — all C interfaces, zero wrappers needed</td></tr>
+        <tr><td>Oracle ABI guarantee</td><td>C binaries from Solaris 10 run unchanged on 11.4. No other language has this guarantee</td></tr>
+        <tr><td>Small footprint</td><td>15–50 MB agents. Rust/Go produce 5–50x larger binaries due to static linking</td></tr>
+        <tr><td>No GC pauses</td><td>Agents must have predictable performance. C has no garbage collector</td></tr>
+        <tr><td>Cross-platform codebase</td><td>Same C code with <code>#ifdef __sun</code> guards compiles for Solaris, AIX, HP-UX, Linux, macOS</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- BIGFIX -->
+<section id="bigfix">
+  <h2><span class="num">02</span> HCL BigFix — The Market Leader on Solaris</h2>
+  <p>Originally developed by BigFix Inc. (1997), acquired by IBM (2010), then by HCL Technologies (2018). BigFix has the most complete Solaris endpoint management of any product in the market.</p>
+
+  <div class="spec-grid">
+    <div class="spec"><div class="label">Agent Language</div><div class="value green">C / C++</div></div>
+    <div class="spec"><div class="label">Agent Size</div><div class="value">~40–50 MB</div></div>
+    <div class="spec"><div class="label">Memory Footprint</div><div class="value">~50–100 MB</div></div>
+    <div class="spec"><div class="label">Min Solaris Version</div><div class="value accent">Solaris 11 (SRU)</div></div>
+    <div class="spec"><div class="label">SPARC Support</div><div class="value green">Yes (sparcv9)</div></div>
+    <div class="spec"><div class="label">x86-64 Support</div><div class="value green">Yes (amd64)</div></div>
+    <div class="spec"><div class="label">Solaris 10 Support</div><div class="value" style="color:var(--red)">Dropped (2018)</div></div>
+    <div class="spec"><div class="label">Pricing</div><div class="value">$15–30/endpoint/yr</div></div>
+  </div>
+
+  <h3>Architecture</h3>
+  <p>BigFix agent runs as a Solaris SMF service (<code class="mono">BESClient</code>). It communicates via HTTP/HTTPS through a relay hierarchy: <strong>Root Server → Relay(s) → Agent</strong>. Agents evaluate "Fixlet" relevance locally and report only when state changes. Default heartbeat is ~15 minutes.</p>
+
+  <h3>Cross-Platform Abstraction Layer</h3>
+  <p>BigFix built two proprietary DSLs on top of the C++ agent core:</p>
+  <div class="cards">
+    <div class="card">
+      <div class="title">Relevance Language</div>
+      <div class="meta">Type: <span>Declarative query</span></div>
+      <ul>
+        <li>Reads endpoint properties (OS version, installed packages, disk usage, etc.)</li>
+        <li>Same query works on all platforms — <code class="mono">name of operating system</code> returns "SunOS" on Solaris</li>
+        <li>On Solaris, translates to C calls: <code class="mono">uname()</code>, <code class="mono">kstat_open()</code>, <code class="mono">getifaddrs()</code>, <code class="mono">pkg list</code> parsing</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="title">ActionScript</div>
+      <div class="meta">Type: <span>Imperative remediation</span></div>
+      <ul>
+        <li>Executes remediation actions (install packages, run scripts, modify config)</li>
+        <li>Abstracts platform differences — same action template works on Windows/Linux/Solaris</li>
+        <li>On Solaris, translates to: <code class="mono">pkg install</code> (IPS), <code class="mono">pkgadd</code> (SVR4), <code class="mono">sh -c</code> for scripts</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Solaris C API Usage</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Solaris API</th><th>BigFix Usage</th><th>C Function Calls</th></tr></thead>
+      <tbody>
+        <tr><td>System ID</td><td>OS version, hostname, architecture detection</td><td><code>uname()</code>, <code>sysinfo(SI_ISALIST)</code>, <code>sysinfo(SI_PLATFORM)</code></td></tr>
+        <tr><td>Hardware</td><td>CPU count/speed, memory, disk stats</td><td><code>kstat_open()</code>, <code>kstat_read()</code>, <code>/proc</code>, <code>prtconf</code>, <code>prtdiag</code></td></tr>
+        <tr><td>Network</td><td>IP addresses, interfaces, routing tables</td><td><code>getifaddrs()</code>, <code>ioctl(SIOCGIFCONF)</code>, socket APIs</td></tr>
+        <tr><td>Filesystem</td><td>Mount points, disk usage, ZFS properties</td><td><code>statvfs()</code>, <code>getmntent()</code>, <code>libzfs</code> queries</td></tr>
+        <tr><td>Packages</td><td>Installed software inventory</td><td>IPS: <code>pkg list</code> output parsing; SVR4: <code>pkginfo</code> parsing</td></tr>
+        <tr><td>Processes</td><td>Running process inventory</td><td><code>/proc/&lt;pid&gt;/psinfo</code> reading (Solaris procfs)</td></tr>
+        <tr><td>Services</td><td>SMF service status and control</td><td><code>svcs -a</code> parsing, <code>svcadm</code> for remediation</td></tr>
+        <tr><td>Patching</td><td>SRU deployment with automatic rollback</td><td><code>pkg update --accept --be-name</code> + <code>beadm</code> Boot Environments</td></tr>
+        <tr><td>File scanning</td><td>Software discovery, integrity hashing</td><td><code>opendir()</code>/<code>readdir()</code> + SHA-256 via <code>libmd</code></td></tr>
+        <tr><td>Virtualization</td><td>LDom detection and inventory</td><td><code>ldm list</code> parsing, kstat virtualization data</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Patch Management on Solaris 11 — The Flagship Feature</h3>
+  <p>BigFix provides the most complete Solaris patch management in the market:</p>
+  <div class="callout success">
+    <strong>Boot Environment Rollback:</strong> Before every patch operation, BigFix creates a ZFS Boot Environment snapshot. If patching fails, instant rollback via <code class="mono">beadm activate &lt;old_BE&gt;</code>. No competitor implements this on Solaris.
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Step</th><th>Implementation</th></tr></thead>
+      <tbody>
+        <tr><td>1. Content sourcing</td><td>HCL maintains a "Patches for Solaris 11" Fixlet site mapping Oracle SRU releases to Fixlets</td></tr>
+        <tr><td>2. Package download</td><td>Registered download plug-in authenticates with Oracle's support repository. Air-gapped: Solaris Download Cacher tool</td></tr>
+        <tr><td>3. Local repository</td><td>IPS Repository Management dashboard configures local IPS mirrors to reduce download time</td></tr>
+        <tr><td>4. Deployment</td><td>Fixlets wrap <code>pkg update</code> with pre/post validation, creating backup Boot Environment</td></tr>
+        <tr><td>5. Compliance</td><td>Relevance expressions check installed SRU level against target; reports non-compliant endpoints</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Compliance on Solaris</h3>
+  <p>BigFix recently updated its DISA STIG Checklist for Solaris 11 to support <strong>ORACLE SOLARIS 11 X86, V3R2</strong> and <strong>ORACLE SOLARIS 11 SPARC, V3R2</strong> benchmarks (published June 2025). CIS benchmarks are also available. All compliance checking runs natively in the C++ agent using Relevance expressions — <strong>no JRE dependency</strong>.</p>
+
+  <h3>Installation on Solaris 11</h3>
+  <p>BigFix delivers its agent as an IPS <code class="mono">.p5p</code> package (since version 9.5.13). Installation uses standard Solaris package tools:</p>
+  <div class="callout">
+    <strong>Prerequisites:</strong> SUNWlibC package must be installed. For global zones with children, a local IPS repository must be created with <code class="mono">pkgrepo create</code> and <code class="mono">pkgrecv</code> before installing.
+  </div>
+</section>
+
+<!-- TANIUM -->
+<section id="tanium">
+  <h2><span class="num">03</span> Tanium — Real-Time Speed at Scale</h2>
+  <p>Founded in 2007 by Orion Hindawi (who co-founded BigFix). Designed from scratch for speed and scale with a unique peer-to-peer communication model.</p>
+
+  <div class="spec-grid">
+    <div class="spec"><div class="label">Agent Language</div><div class="value green">C / C++</div></div>
+    <div class="spec"><div class="label">Agent Size</div><div class="value">~15–20 MB</div></div>
+    <div class="spec"><div class="label">Memory Footprint</div><div class="value">~20–50 MB</div></div>
+    <div class="spec"><div class="label">Min Solaris Version</div><div class="value accent">Solaris 10 Update 11</div></div>
+    <div class="spec"><div class="label">SPARC Support</div><div class="value green">Yes (sparcv9)</div></div>
+    <div class="spec"><div class="label">x86-64 Support</div><div class="value green">Yes (amd64)</div></div>
+    <div class="spec"><div class="label">Solaris 10 Support</div><div class="value green">Yes (10u11+)</div></div>
+    <div class="spec"><div class="label">Pricing</div><div class="value">$30–50+/endpoint/yr</div></div>
+  </div>
+
+  <h3>Architecture — Linear Chain P2P</h3>
+  <p>Tanium's patented <strong>linear chain architecture</strong> is its key differentiator. Unlike BigFix's hub-spoke relay model:</p>
+  <div class="cards">
+    <div class="card">
+      <div class="title">How It Works</div>
+      <div class="meta">Communication: <span>Proprietary TCP protocol</span></div>
+      <ul>
+        <li>Server sends a query to a few "leader" agents</li>
+        <li>Leaders forward to neighbors, who forward to theirs — forming a dynamic chain</li>
+        <li>Results aggregate back up the chain, with each node summarizing</li>
+        <li>Queries millions of endpoints in under 15 seconds</li>
+        <li>On Solaris, uses standard POSIX sockets (<code class="mono">socket()</code>, <code class="mono">connect()</code>, <code class="mono">send()</code>, <code class="mono">recv()</code>)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="title">Modular Client Extensions</div>
+      <div class="meta">Design: <span>Single binary + loadable modules</span></div>
+      <ul>
+        <li>Core agent handles communication, registration, basic queries</li>
+        <li>Each module (Discover, Asset, Comply, etc.) installs a Client Extension (CX)</li>
+        <li>Extensions are signed <code class="mono">.so</code> shared objects or script packages</li>
+        <li>Agent verifies digital signatures before loading any extension</li>
+        <li>Allows feature updates without replacing the core agent</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Module Support on Solaris</h3>
+  <p>Tanium has 15+ modules. Their Solaris support varies significantly:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Purpose</th><th>Solaris</th><th>Key Limitation</th></tr></thead>
+      <tbody>
+        <tr><td>Interact</td><td>Real-time endpoint querying</td><td class="yes">✅ Full</td><td>Core platform — works everywhere the agent runs</td></tr>
+        <tr><td>Asset</td><td>HW/SW asset inventory</td><td class="yes">✅ Full</td><td>Uses kstat, procfs, pkg for data collection</td></tr>
+        <tr><td>Discover</td><td>Network discovery</td><td class="partial">⚠️ Level 2</td><td>Nmap not supported on Solaris — falls back to ARP/ping scanning</td></tr>
+        <tr><td>Comply</td><td>Compliance & vulnerability</td><td class="yes">✅ Yes</td><td>Requires Oracle JRE 8 upload (Amazon Corretto not supported on Solaris)</td></tr>
+        <tr><td>Patch</td><td>OS patch management</td><td class="partial">⚠️ Limited</td><td>Basic pkg update support; less automated than Windows patching</td></tr>
+        <tr><td>Deploy</td><td>Software deployment</td><td class="yes">✅ Yes</td><td>Can deploy packages, scripts, and files</td></tr>
+        <tr><td>Enforce</td><td>Config policy enforcement</td><td class="partial">⚠️ Limited</td><td>Client extensions primarily target Windows and Linux</td></tr>
+        <tr><td>Threat Response</td><td>EDR / incident response</td><td class="no">❌ No</td><td>NOT available on Solaris — Windows/Linux only</td></tr>
+        <tr><td>Impact</td><td>Lateral movement analysis</td><td class="no">❌ No</td><td>Windows/Linux only</td></tr>
+        <tr><td>Integrity Monitor</td><td>File integrity monitoring</td><td class="partial">⚠️ Basic</td><td>Hash-based monitoring only; no real-time file event detection</td></tr>
+        <tr><td>Reveal</td><td>Sensitive data discovery / DLP</td><td class="no">❌ No</td><td>Windows/Linux/macOS only</td></tr>
+        <tr><td>Performance</td><td>Endpoint performance monitoring</td><td class="partial">⚠️ Limited</td><td>Basic CPU/memory only; no Solaris-specific metrics (kstat, DTrace)</td></tr>
+        <tr><td>Map</td><td>Network topology mapping</td><td class="no">❌ No</td><td>Not on Solaris</td></tr>
+        <tr><td>Trends</td><td>Historical data trending</td><td class="yes">✅ Yes</td><td>Server-side — works with data from any managed endpoint</td></tr>
+        <tr><td>Connect</td><td>SIEM/CMDB data export</td><td class="yes">✅ Yes</td><td>Server-side — works with data from any managed endpoint</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <strong>Critical Limitation — JRE Dependency for Compliance:</strong> Tanium Comply on Solaris requires administrators to upload Oracle JRE 8 manually because Amazon Corretto (the bundled default for Windows/Linux/macOS) does not support Solaris or AIX. This adds an extra step and dependency that other platforms don't require. The Tanium Scan Engine uses this JRE to evaluate OVAL/SCAP content for CIS, DISA STIG, and custom definitions.
+  </div>
+</section>
+
+<!-- IVANTI -->
+<section id="ivanti">
+  <h2><span class="num">04</span> Ivanti Endpoint Manager — Legacy Support</h2>
+  <p>Ivanti EPM descends from LANDesk Management Suite (1990s). Its Solaris support exists primarily for inventory and basic management — not the full feature set available on Windows.</p>
+
+  <div class="spec-grid">
+    <div class="spec"><div class="label">Agent Language</div><div class="value green">C / C++</div></div>
+    <div class="spec"><div class="label">Agent Size</div><div class="value">~30–40 MB</div></div>
+    <div class="spec"><div class="label">Memory Footprint</div><div class="value">~40–80 MB</div></div>
+    <div class="spec"><div class="label">Min Solaris Version</div><div class="value accent">Solaris 10</div></div>
+    <div class="spec"><div class="label">SPARC Support</div><div class="value green">Yes</div></div>
+    <div class="spec"><div class="label">x86-64 Support</div><div class="value green">Yes</div></div>
+    <div class="spec"><div class="label">Pricing</div><div class="value">$15–25/endpoint/yr</div></div>
+  </div>
+
+  <h3>Feature Support on Solaris</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Hardware inventory</td><td class="yes">✅ Yes</td><td>prtconf, kstat, procfs</td></tr>
+        <tr><td>Software inventory</td><td class="yes">✅ Yes</td><td>pkginfo + pkg list</td></tr>
+        <tr><td>Software distribution</td><td class="yes">✅ Yes</td><td>Script-based deployment</td></tr>
+        <tr><td>Patch management</td><td class="partial">⚠️ Very limited</td><td>No pre-built patch content; effectively manual</td></tr>
+        <tr><td>Remote control</td><td class="partial">⚠️ Basic VNC</td><td>Functional but limited compared to Windows</td></tr>
+        <tr><td>Compliance baselines</td><td class="partial">⚠️ Basic</td><td>Policy-based checks only; no SCAP/OVAL</td></tr>
+        <tr><td>Vulnerability scanning</td><td class="no">❌ No</td><td>Not implemented on Solaris</td></tr>
+        <tr><td>EDR / Threat detection</td><td class="no">❌ No</td><td>Not implemented on Solaris</td></tr>
+        <tr><td>OS deployment</td><td class="no">❌ No</td><td>Not implemented on Solaris</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <strong>Assessment:</strong> Ivanti is the weakest of the three competitors on Solaris. Its agent provides basic inventory and software distribution but lacks meaningful patch management, compliance, or security features. It exists primarily for organizations that need to maintain visibility over their Solaris endpoints alongside Windows/Linux in a single console.
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="comparison">
+  <h2><span class="num">05</span> Head-to-Head Comparison</h2>
+
+  <h3>Feature Matrix</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>HCL BigFix</th><th>Tanium</th><th>Ivanti EPM</th></tr></thead>
+      <tbody>
+        <tr><td>Min Solaris version</td><td>Solaris 11</td><td>Solaris 10u11</td><td>Solaris 10</td></tr>
+        <tr><td>SPARC + x86</td><td class="yes">✅ Both</td><td class="yes">✅ Both</td><td class="yes">✅ Both</td></tr>
+        <tr><td>Hardware inventory</td><td class="yes">✅ Full</td><td class="yes">✅ Full</td><td class="yes">✅ Full</td></tr>
+        <tr><td>Software inventory</td><td class="yes">✅ IPS + SVR4</td><td class="yes">✅ IPS + SVR4</td><td class="yes">✅ IPS + SVR4</td></tr>
+        <tr><td>SRU patch management</td><td class="yes">✅ Full (BE rollback)</td><td class="partial">⚠️ Basic</td><td class="no">❌ Manual only</td></tr>
+        <tr><td>Compliance (CIS/STIG)</td><td class="yes">✅ Native (no JRE)</td><td class="yes">✅ SCAP (needs JRE)</td><td class="partial">⚠️ Basic policies</td></tr>
+        <tr><td>Vulnerability scanning</td><td class="yes">✅ CVE matching</td><td class="yes">✅ OVAL defs</td><td class="no">❌ No</td></tr>
+        <tr><td>Software deployment</td><td class="yes">✅ Yes</td><td class="yes">✅ Yes</td><td class="yes">✅ Yes</td></tr>
+        <tr><td>Remote execution</td><td class="yes">✅ ActionScript</td><td class="yes">✅ Interact + Deploy</td><td class="partial">⚠️ Limited</td></tr>
+        <tr><td>Zone/LDom awareness</td><td class="yes">✅ LDom 2.0–3.4</td><td class="yes">✅ zonename</td><td class="partial">⚠️ Partial</td></tr>
+        <tr><td>Boot Env rollback</td><td class="yes">✅ beadm</td><td class="no">❌ No</td><td class="no">❌ No</td></tr>
+        <tr><td>EDR / Threat detection</td><td class="no">❌ No</td><td class="no">❌ No</td><td class="no">❌ No</td></tr>
+        <tr><td>Real-time FIM</td><td class="no">❌ No</td><td class="partial">⚠️ Hash only</td><td class="no">❌ No</td></tr>
+        <tr><td>DTrace integration</td><td class="no">❌ No</td><td class="no">❌ No</td><td class="no">❌ No</td></tr>
+        <tr><td>JRE required</td><td class="yes">No</td><td class="partial">Yes (Comply)</td><td class="yes">No</td></tr>
+        <tr><td>Query speed</td><td>Minutes</td><td class="yes">Seconds (P2P)</td><td>Minutes</td></tr>
+        <tr><td>Agent footprint</td><td>40–50 MB</td><td class="yes">15–20 MB</td><td>30–40 MB</td></tr>
+        <tr><td>Pricing</td><td>$15–30/ep/yr</td><td>$30–50+/ep/yr</td><td>$15–25/ep/yr</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Verdict by Use Case</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="title">Best for Patch Management</div>
+      <div class="meta">Winner: <span>HCL BigFix</span></div>
+      <ul>
+        <li>Only product with Boot Environment rollback</li>
+        <li>Pre-built SRU Fixlet content from HCL</li>
+        <li>Local IPS repository management dashboard</li>
+        <li>Download cacher for air-gapped environments</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="title">Best for Real-Time Visibility</div>
+      <div class="meta">Winner: <span>Tanium</span></div>
+      <ul>
+        <li>Queries millions of endpoints in seconds via P2P chain</li>
+        <li>Smallest agent footprint (15–20 MB)</li>
+        <li>Real-time asset inventory and compliance checks</li>
+        <li>Best for large-scale federal/enterprise deployments</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="title">Best for Budget-Conscious Inventory</div>
+      <div class="meta">Winner: <span>Ivanti EPM</span></div>
+      <ul>
+        <li>Lowest pricing of the three</li>
+        <li>Adequate for basic inventory and software distribution</li>
+        <li>Weakest feature set — suitable only for visibility</li>
+        <li>No meaningful patch management or compliance</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section id="gaps">
+  <h2><span class="num">06</span> Gap Analysis — Features Nobody Built on Solaris</h2>
+  <p>These features are available on Windows/Linux in all three products but <strong>none of them implement on Solaris</strong>. Each represents a differentiation opportunity:</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Feature Gap</th><th>Why No Competitor Built It</th><th>Solaris API Available</th><th>Opportunity</th></tr></thead>
+      <tbody>
+        <tr><td>EDR / Threat Detection</td><td>No eBPF/ETW equivalent used; DTrace is C-only</td><td><code>DTrace USDT probes</code>, <code>Solaris Audit (BSM)</code></td><td class="yes">HIGH</td></tr>
+        <tr><td>Real-time FIM</td><td>No inotify/fanotify equivalent used</td><td><code>port_associate(PORT_SOURCE_FILE)</code> — kernel-level</td><td class="yes">HIGH</td></tr>
+        <tr><td>DTrace Monitoring</td><td>None of the competitors integrated DTrace</td><td><code>libdtrace</code> C API, USDT probe framework</td><td class="yes">HIGH</td></tr>
+        <tr><td>Zone Lifecycle Mgmt</td><td>Only basic detection implemented</td><td><code>zonecfg</code>, <code>zoneadm</code>, <code>libzonecfg</code></td><td class="yes">HIGH</td></tr>
+        <tr><td>ZFS Snapshot Mgmt</td><td>Not attempted by any competitor</td><td><code>libzfs</code> C API for snapshot/clone/rollback</td><td class="yes">HIGH</td></tr>
+        <tr><td>USB Device Control</td><td>Solaris USB stack differs from Linux</td><td><code>devfsadm</code>, <code>syseventd</code> hotplug</td><td class="partial">MEDIUM</td></tr>
+        <tr><td>App Whitelisting</td><td>No AppLocker/SELinux equivalent</td><td>Solaris RBAC + fine-grained privileges</td><td class="partial">MEDIUM</td></tr>
+        <tr><td>DLP / Data Discovery</td><td>Content scanning not optimized for SPARC</td><td>Native C regex + file scanning</td><td class="partial">MEDIUM</td></tr>
+        <tr><td>Network Quarantine</td><td>Different firewall approach</td><td><code>ipf</code> / <code>pf</code> firewall rule injection</td><td class="na">LOW</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- RECOMMENDATION -->
+<section id="recommendation">
+  <h2><span class="num">07</span> Implementation Recommendation</h2>
+  <p>A phased approach to add Oracle Solaris agent support to ManageEngine Endpoint Central:</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-title">Phase 1: Foundation MVP — 3–4 Months</div>
+      <div class="tl-desc">C99 agent, SMF service, HTTPS communication, hardware/software inventory (kstat, prtconf, pkg list, pkginfo), remote execution, Zone detection. <strong>Achieves parity with Ivanti.</strong></div>
+    </div>
+    <div class="tl-item phase2">
+      <div class="tl-title">Phase 2: Patch & Compliance — 3–4 Months</div>
+      <div class="tl-desc">IPS SRU patching with Boot Environment rollback, CIS/STIG compliance via native C engine (no JRE dependency — beats Tanium), CVE vulnerability matching, software deployment. <strong>Matches BigFix.</strong></div>
+    </div>
+    <div class="tl-item phase3">
+      <div class="tl-title">Phase 3: Market Differentiation — 4–6 Months</div>
+      <div class="tl-desc">DTrace integration (USDT probes), Zone lifecycle management, real-time FIM (port_associate), ZFS snapshot management, Solaris Audit/BSM for EDR. <strong>Features NO competitor has ever built.</strong></div>
+    </div>
+  </div>
+
+  <h3>Why This Strategy Wins</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="title">Price Advantage</div>
+      <div class="meta">Estimated: <span>$5–15/endpoint/yr</span> vs $15–50</div>
+      <ul>
+        <li>BigFix: $15–30/ep — ManageEngine beats by 50%+</li>
+        <li>Tanium: $30–50+/ep — ManageEngine beats by 70%+</li>
+        <li>Existing EC customers add Solaris at marginal cost</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="title">12 Competitors Can't Follow</div>
+      <div class="meta">Moat: <span>Technical barrier</span></div>
+      <ul>
+        <li>NinjaOne, Atera, CrowdStrike, Intune — all built on .NET/Go/cloud-native stacks</li>
+        <li>Cannot feasibly add SPARC C agent support</li>
+        <li>Solaris market is too small for them to invest</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="title">Unique Differentiators</div>
+      <div class="meta">Phase 3: <span>Features nobody has</span></div>
+      <ul>
+        <li>DTrace integration — Solaris's killer feature, untapped</li>
+        <li>Real-time FIM — compliance requirement, unmet</li>
+        <li>Zone management — primary Solaris virtualization</li>
+        <li>No JRE dependency — cleaner than Tanium</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Solaris Endpoint Agent Competitor Deep Dive — March 2026</p>
+  <p>Prepared for UEMS Agent Framework Team, ManageEngine / Zoho Corporation</p>
+  <p style="margin-top:.75rem; font-size:.75rem; color:#555;">Based on HCL BigFix 11.0, Tanium Cloud 2024, Ivanti Neurons 2024, Oracle Solaris 11.4 SRU 81 CBE</p>
+</footer>
+
+</body>
+</html>
