@@ -231,18 +231,6 @@ td:first-child { font-weight: 600; color: var(--h); }
 .tl-title { font-weight: 700; color: var(--h); font-size: 1.05rem; margin-bottom: .3rem; }
 .tl-time { font-family: var(--mono); font-size: .72rem; color: var(--t2); margin-bottom: .3rem; }
 
-/* Code block */
-.codeblock {
-  background: var(--s); border: 1px solid var(--bd); border-radius: 8px;
-  padding: 1rem 1.2rem; font-family: var(--mono); font-size: .78rem;
-  color: var(--t); overflow-x: auto; margin: .75rem 0; line-height: 1.8;
-  white-space: pre;
-}
-.codeblock .comment { color: var(--t2); }
-.codeblock .keyword { color: var(--cy); }
-.codeblock .string { color: var(--gn); }
-.codeblock .func { color: var(--am); }
-
 /* Footer */
 footer {
   max-width: 1300px; margin: 0 auto; padding: 3rem 2rem;
@@ -277,6 +265,7 @@ footer p { font-size: .78rem; color: var(--t2); }
       <a href="#h2h">Head-to-Head</a>
       <a href="#apis">API Deep Dive</a>
       <a href="#gaps">Gaps</a>
+      <a href="#roadmap">Implementation</a>
     </div>
   </div>
 </nav>
@@ -291,7 +280,7 @@ footer p { font-size: .78rem; color: var(--t2); }
       <div class="stat-card"><div class="stat-val" style="color:var(--cy)">3</div><div class="stat-lbl">With Solaris Agent</div></div>
       <div class="stat-card"><div class="stat-val" style="color:var(--rd)">12+</div><div class="stat-lbl">Without</div></div>
       <div class="stat-card"><div class="stat-val" style="color:var(--gn)">C/C++</div><div class="stat-lbl">Agent Language (All 3)</div></div>
-      <div class="stat-card"><div class="stat-val" style="color:var(--am)">Sol 10u11</div><div class="stat-lbl">Earliest Supported</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--am)">Sol 10 U8</div><div class="stat-lbl">Earliest Supported</div></div>
       <div class="stat-card"><div class="stat-val" style="color:var(--vi)">GCC</div><div class="stat-lbl">Compiler (All 3)</div></div>
     </div>
   </div>
@@ -310,7 +299,7 @@ footer p { font-size: .78rem; color: var(--t2); }
         <thead><tr><th>Product</th><th>Vendor</th><th>Solaris</th><th>Min Version</th><th>SPARC</th><th>x86-64</th><th>Agent Lang</th><th>Compiler</th></tr></thead>
         <tbody>
           <tr><td>HCL BigFix</td><td>HCL</td><td class="y">✅ Yes</td><td>Solaris 11</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td><td>GCC</td></tr>
-          <tr><td>Tanium</td><td>Tanium</td><td class="y">✅ Yes</td><td>Solaris 10u11</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td><td>GCC</td></tr>
+          <tr><td>Tanium</td><td>Tanium</td><td class="y">✅ Yes</td><td>Solaris 10 Update 8</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td><td>GCC</td></tr>
           <tr><td>Ivanti EPM</td><td>Ivanti</td><td class="y">✅ Yes</td><td>Solaris 10</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td><td>GCC</td></tr>
           <tr><td>ME Endpoint Central</td><td>Zoho</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Java / C</td><td class="d">—</td></tr>
           <tr><td>Microsoft Intune</td><td>Microsoft</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET / C++</td><td class="d">—</td></tr>
@@ -351,7 +340,7 @@ footer p { font-size: .78rem; color: var(--t2); }
   <div class="wrap">
     <div class="section-label">Section 02 — Deep Dive</div>
     <h2>HCL <span>BigFix</span></h2>
-    <p>BigFix Inc. (1997) → IBM (2010) → HCL Technologies (2018). Most feature-complete Solaris agent in the market.</p>
+    <p>BigFix Inc. (1997) → IBM (2010) → HCL Technologies (2018). Most feature-complete Solaris agent in the market. BigFix Platform 11 supports Solaris 11 (SPARC and x86). Solaris 10 support dropped when Oracle ended premium support in 2018. Agent delivered as IPS .p5p package since version 9.5.13. Requires SUNWlibC package. Latest DISA STIG checklist for Solaris 11 V3R2 published June 2025.</p>
 
     <div class="pills">
       <div class="pill"><div class="dot" style="background:var(--bl)"></div>C/C++ Agent</div>
@@ -444,15 +433,16 @@ footer p { font-size: .78rem; color: var(--t2); }
   <div class="wrap">
     <div class="section-label">Section 03 — Deep Dive</div>
     <h2><span>Tanium</span></h2>
-    <p>Founded 2007 by Orion Hindawi (co-founded BigFix). Rebuilt from scratch for speed. Patented P2P linear chain architecture.</p>
+    <p>Founded 2007 by Orion Hindawi (co-founded BigFix). Rebuilt from scratch for speed. Patented P2P linear chain architecture. Latest Solaris client versions: 7.4.10.1067 (SPARC/x86). Requires SUNWgccruntime on Solaris 10 and 11.0–11.3.</p>
 
     <div class="pills">
       <div class="pill"><div class="dot" style="background:var(--vi)"></div>C/C++ Agent</div>
-      <div class="pill"><div class="dot" style="background:var(--gn)"></div>Sol 10u11+ (SPARC &amp; x86)</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>Sol 10 U8+ (SPARC &amp; x86)</div>
       <div class="pill"><div class="dot" style="background:var(--gn)"></div>Sol 11 (SPARC &amp; x86)</div>
       <div class="pill"><div class="dot" style="background:var(--cy)"></div>~15–20 MB (smallest)</div>
       <div class="pill"><div class="dot" style="background:var(--cy)"></div>~20–50 MB RSS</div>
       <div class="pill"><div class="dot" style="background:var(--gn)"></div>SMF: taniumclient</div>
+      <div class="pill"><div class="dot" style="background:var(--am)"></div>SUNWgccruntime prereq (Sol 10/11.0–11.3)</div>
       <div class="pill"><div class="dot" style="background:var(--am)"></div>JRE for Comply</div>
       <div class="pill"><div class="dot" style="background:var(--gn)"></div>15+ loadable modules</div>
       <div class="pill"><div class="dot" style="background:var(--gn)"></div>Code-signed CX extensions</div>
@@ -542,7 +532,7 @@ footer p { font-size: .78rem; color: var(--t2); }
     <div class="tbl-wrap"><table>
       <thead><tr><th>Feature</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead>
       <tbody>
-        <tr><td>Min Solaris</td><td>11</td><td>10u11</td><td>10</td></tr>
+        <tr><td>Min Solaris</td><td>11</td><td>10 U8 (SPARC/x86)</td><td>10</td></tr>
         <tr><td>Agent size</td><td>40–50 MB</td><td class="y">15–20 MB</td><td>30–40 MB</td></tr>
         <tr><td>Query speed</td><td>Minutes</td><td class="y">Seconds</td><td>Minutes</td></tr>
         <tr><td>Communication</td><td>HTTPS relay</td><td>TCP P2P chain</td><td>HTTPS C/S</td></tr>
@@ -610,7 +600,69 @@ footer p { font-size: .78rem; color: var(--t2); }
 </section>
 
 <!-- ═══════════ SECTION 8: IMPLEMENTATION ROADMAP ═══════════ -->
+<section id="roadmap" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 08</div>
+    <h2>Implementation <span>Roadmap</span></h2>
+    <p>If ManageEngine Endpoint Central starts fresh to build an Oracle Solaris agent, here is the complete path — tech stack, architecture decisions, and feature-by-feature implementation approach.</p>
 
+    <h3>Tech Stack Decision</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Decision</th><th>Choice</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Language</td><td><strong>C (C99 standard)</strong></td><td>Every competitor chose C/C++. Only language with SPARC+x86, all OS APIs, ABI guarantee, and zero runtime dependency.</td></tr>
+        <tr><td>Compiler</td><td><strong>GCC 12+ (both archs)</strong></td><td>Ships with Solaris 11.4 CBE. All 3 competitors use GCC. Test with Oracle Developer Studio for SPARC optimization.</td></tr>
+        <tr><td>Build system</td><td><strong>CMake + Make</strong></td><td>CMake for cross-platform config. Separate Makefiles for SPARC and x86-64 targets.</td></tr>
+        <tr><td>TLS library</td><td><strong>OpenSSL 3.x</strong></td><td>Ships with Solaris 11.4. All 3 competitors depend on OpenSSL for agent→server HTTPS.</td></tr>
+        <tr><td>Packaging</td><td><strong>IPS .p5p package</strong></td><td>Native Solaris 11 package format. BigFix uses .p5p since v9.5.13. Clean install/upgrade/uninstall via pkg.</td></tr>
+        <tr><td>Service mgmt</td><td><strong>SMF (svc.startd)</strong></td><td>All 3 competitors register as SMF services. Auto-restart on crash. Integration with Solaris service framework.</td></tr>
+        <tr><td>Communication</td><td><strong>HTTPS to EC server</strong></td><td>Reuse existing Endpoint Central server infrastructure. Agent polls or receives push via HTTPS.</td></tr>
+        <tr><td>Cross-platform</td><td><strong>#ifdef __sun / __sparc guards</strong></td><td>Standard pattern used by BigFix, Tanium, Ivanti. Platform-specific code behind preprocessor guards.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Phased Implementation</h3>
+    <div class="timeline">
+      <div class="tl-item p1">
+        <div class="tl-title">Phase 1: Foundation MVP</div>
+        <div class="tl-time">3–4 months — Achieves parity with Ivanti</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Agent Daemon</h4><p>C99, SMF-managed, HTTPS to EC server</p><ul><li>SMF manifest for auto-start/restart</li><li>OpenSSL TLS 1.2+ for secure communication</li><li>Configurable heartbeat interval</li><li>Graceful shutdown via SIGTERM handler</li></ul></div>
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Hardware Inventory</h4><p>CPU, memory, disk, NIC, SPARC model</p><ul><li><code>kstat_open()/kstat_read()</code> for CPU/mem/disk</li><li><code>prtconf</code> for device tree</li><li><code>prtdiag</code> for SPARC board layout</li><li><code>/proc</code> for process information</li></ul></div>
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Software Inventory</h4><p>IPS + SVR4 packages + file scan</p><ul><li><code>pkg list -H</code> for IPS packages</li><li><code>pkginfo -l</code> for SVR4 legacy</li><li><code>opendir()/readdir()</code> filesystem scan</li><li>SHA-256 hashing via <code>libmd</code></li></ul></div>
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Network &amp; OS Info</h4><p>IPs, interfaces, OS version, Zone detect</p><ul><li><code>getifaddrs()</code> for all interfaces</li><li><code>uname()/sysinfo()</code> for OS identification</li><li><code>zonename</code> for zone detection</li><li>IPS .p5p packaging for deployment</li></ul></div>
+    </div>
+
+    <div class="timeline" style="margin-top:2rem">
+      <div class="tl-item p2">
+        <div class="tl-title">Phase 2: Patch &amp; Compliance</div>
+        <div class="tl-time">3–4 months — Matches HCL BigFix</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>SRU Patch Management</h4><p>Automated IPS patching with rollback</p><ul><li><code>pkg update --accept --be-name</code></li><li>ZFS Boot Environment creation before patching</li><li><code>beadm activate</code> for rollback on failure</li><li>SRU level verification after patching</li></ul></div>
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Compliance Scanning</h4><p>CIS/STIG via native C engine</p><ul><li>Native compliance engine in C — NO JRE (beats Tanium)</li><li>CIS Solaris 11 benchmark checks</li><li>DISA STIG V3R2 evaluation</li><li>Custom policy support</li></ul></div>
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Vulnerability Assessment</h4><p>CVE matching against packages</p><ul><li>Map installed IPS packages to CVE database</li><li>Severity scoring and reporting</li><li>Auto-remediation via patch deployment</li></ul></div>
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Service &amp; SW Management</h4><p>SMF control + software deployment</p><ul><li><code>svcs/svcadm/svccfg</code> for SMF</li><li><code>pkg install</code> for IPS deployment</li><li>Script deployment + remote execution</li></ul></div>
+    </div>
+
+    <div class="timeline" style="margin-top:2rem">
+      <div class="tl-item p3">
+        <div class="tl-title">Phase 3: Market Differentiation</div>
+        <div class="tl-time">4–6 months — Features NO competitor has</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>DTrace Integration</h4><p>Production-safe application/kernel tracing</p><ul><li>Embed USDT probes in agent binary</li><li><code>libdtrace</code> C API for probe management</li><li>Zero overhead when probes disabled</li><li>Enable tracing from EC console</li></ul></div>
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>Real-time FIM</h4><p>Kernel-level file change monitoring</p><ul><li><code>port_associate(PORT_SOURCE_FILE)</code></li><li>Event port for file modify/delete/rename</li><li>Solaris equivalent of Linux inotify</li><li>PCI DSS / HIPAA compliance requirement</li></ul></div>
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>Zone Lifecycle Management</h4><p>Full zone control from EC console</p><ul><li><code>zonecfg</code> for zone configuration</li><li><code>zoneadm install/boot/halt/clone</code></li><li><code>libzonecfg</code> for programmatic access</li><li>Zone migration between hosts</li></ul></div>
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>ZFS Snapshots + Solaris Audit</h4><p>Data protection + security events</p><ul><li><code>libzfs</code> for snapshot/clone management</li><li>Schedule automated ZFS snapshots</li><li>BSM audit trail parsing for security</li><li>Alert on privilege escalation, login failures</li></ul></div>
+    </div>
+
+    </div>
+</section>
 
 <footer>
   <p>Solaris Endpoint Agent — Competitor Intelligence &amp; Implementation Guide</p>
