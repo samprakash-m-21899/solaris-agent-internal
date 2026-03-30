@@ -277,7 +277,6 @@ footer p { font-size: .78rem; color: var(--t2); }
       <a href="#h2h">Head-to-Head</a>
       <a href="#apis">API Deep Dive</a>
       <a href="#gaps">Gaps</a>
-      <a href="#roadmap">Implementation</a>
     </div>
   </div>
 </nav>
@@ -611,120 +610,7 @@ footer p { font-size: .78rem; color: var(--t2); }
 </section>
 
 <!-- ═══════════ SECTION 8: IMPLEMENTATION ROADMAP ═══════════ -->
-<section id="roadmap" class="rv">
-  <div class="wrap">
-    <div class="section-label">Section 08</div>
-    <h2>Implementation <span>Roadmap</span></h2>
-    <p>If ManageEngine Endpoint Central starts fresh to build an Oracle Solaris agent, here is the complete path — tech stack, architecture decisions, and feature-by-feature implementation approach.</p>
 
-    <h3>Tech Stack Decision</h3>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>Decision</th><th>Choice</th><th>Rationale</th></tr></thead>
-      <tbody>
-        <tr><td>Language</td><td><strong>C (C99 standard)</strong></td><td>Every competitor chose C/C++. Only language with SPARC+x86, all OS APIs, ABI guarantee, and zero runtime dependency.</td></tr>
-        <tr><td>Compiler</td><td><strong>GCC 12+ (both archs)</strong></td><td>Ships with Solaris 11.4 CBE. All 3 competitors use GCC. Test with Oracle Developer Studio for SPARC optimization.</td></tr>
-        <tr><td>Build system</td><td><strong>CMake + Make</strong></td><td>CMake for cross-platform config. Separate Makefiles for SPARC and x86-64 targets.</td></tr>
-        <tr><td>TLS library</td><td><strong>OpenSSL 3.x</strong></td><td>Ships with Solaris 11.4. All 3 competitors depend on OpenSSL for agent→server HTTPS.</td></tr>
-        <tr><td>Packaging</td><td><strong>IPS .p5p package</strong></td><td>Native Solaris 11 package format. BigFix uses .p5p since v9.5.13. Clean install/upgrade/uninstall via pkg.</td></tr>
-        <tr><td>Service mgmt</td><td><strong>SMF (svc.startd)</strong></td><td>All 3 competitors register as SMF services. Auto-restart on crash. Integration with Solaris service framework.</td></tr>
-        <tr><td>Communication</td><td><strong>HTTPS to EC server</strong></td><td>Reuse existing Endpoint Central server infrastructure. Agent polls or receives push via HTTPS.</td></tr>
-        <tr><td>Cross-platform</td><td><strong>#ifdef __sun / __sparc guards</strong></td><td>Standard pattern used by BigFix, Tanium, Ivanti. Platform-specific code behind preprocessor guards.</td></tr>
-      </tbody>
-    </table></div>
-
-    <h3>Codebase Architecture</h3>
-    <div class="codeblock"><span class="comment">// Recommended project structure (same pattern as BigFix/Tanium)</span>
-<span class="keyword">agent/</span>
-├── <span class="keyword">src/</span>
-│   ├── <span class="keyword">core/</span>                    <span class="comment">// Platform-independent</span>
-│   │   ├── <span class="func">agent_main.c</span>         <span class="comment">// Entry point, event loop</span>
-│   │   ├── <span class="func">communication.c</span>      <span class="comment">// HTTPS client, TLS, protocol</span>
-│   │   ├── <span class="func">scheduler.c</span>          <span class="comment">// Task scheduling, heartbeat</span>
-│   │   ├── <span class="func">config.c</span>             <span class="comment">// Configuration management</span>
-│   │   └── <span class="func">crypto.c</span>             <span class="comment">// Hashing, signing (OpenSSL)</span>
-│   ├── <span class="keyword">platform/solaris/</span>        <span class="comment">// Solaris-specific</span>
-│   │   ├── <span class="func">os_info.c</span>            <span class="comment">// uname(), sysinfo(), /etc/release</span>
-│   │   ├── <span class="func">hardware.c</span>           <span class="comment">// kstat for CPU/memory/disk</span>
-│   │   ├── <span class="func">network.c</span>            <span class="comment">// getifaddrs(), routing tables</span>
-│   │   ├── <span class="func">process.c</span>            <span class="comment">// /proc/pid/psinfo reading</span>
-│   │   ├── <span class="func">package.c</span>            <span class="comment">// IPS (pkg) + SVR4 (pkginfo)</span>
-│   │   ├── <span class="func">service.c</span>            <span class="comment">// SMF (svcs/svcadm) integration</span>
-│   │   ├── <span class="func">filesystem.c</span>         <span class="comment">// statvfs(), ZFS via libzfs</span>
-│   │   ├── <span class="func">zones.c</span>              <span class="comment">// zonename, zone detection</span>
-│   │   ├── <span class="func">patch.c</span>              <span class="comment">// pkg update + beadm rollback</span>
-│   │   ├── <span class="func">dtrace_probes.c</span>      <span class="comment">// Phase 3: USDT probes</span>
-│   │   ├── <span class="func">fim.c</span>                <span class="comment">// Phase 3: port_associate FIM</span>
-│   │   └── <span class="func">install.c</span>            <span class="comment">// Agent install/upgrade via IPS</span>
-│   ├── <span class="keyword">platform/linux/</span>          <span class="comment">// Reuse for Linux agent</span>
-│   └── <span class="keyword">platform/common/</span>         <span class="comment">// POSIX shared code</span>
-├── <span class="keyword">build/</span>
-│   ├── CMakeLists.txt
-│   ├── Makefile.solaris-sparc
-│   └── Makefile.solaris-x86
-└── <span class="keyword">pkg/</span>
-    └── solaris-ips/              <span class="comment">// .p5p package manifests</span></div>
-
-    <h3>Phased Implementation</h3>
-    <div class="timeline">
-      <div class="tl-item p1">
-        <div class="tl-title">Phase 1: Foundation MVP</div>
-        <div class="tl-time">3–4 months — Achieves parity with Ivanti</div>
-      </div>
-    </div>
-    <div class="card-grid">
-      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Agent Daemon</h4><p>C99, SMF-managed, HTTPS to EC server</p><ul><li>SMF manifest for auto-start/restart</li><li>OpenSSL TLS 1.2+ for secure communication</li><li>Configurable heartbeat interval</li><li>Graceful shutdown via SIGTERM handler</li></ul></div>
-      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Hardware Inventory</h4><p>CPU, memory, disk, NIC, SPARC model</p><ul><li><code>kstat_open()/kstat_read()</code> for CPU/mem/disk</li><li><code>prtconf</code> for device tree</li><li><code>prtdiag</code> for SPARC board layout</li><li><code>/proc</code> for process information</li></ul></div>
-      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Software Inventory</h4><p>IPS + SVR4 packages + file scan</p><ul><li><code>pkg list -H</code> for IPS packages</li><li><code>pkginfo -l</code> for SVR4 legacy</li><li><code>opendir()/readdir()</code> filesystem scan</li><li>SHA-256 hashing via <code>libmd</code></li></ul></div>
-      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Network &amp; OS Info</h4><p>IPs, interfaces, OS version, Zone detect</p><ul><li><code>getifaddrs()</code> for all interfaces</li><li><code>uname()/sysinfo()</code> for OS identification</li><li><code>zonename</code> for zone detection</li><li>IPS .p5p packaging for deployment</li></ul></div>
-    </div>
-
-    <div class="timeline" style="margin-top:2rem">
-      <div class="tl-item p2">
-        <div class="tl-title">Phase 2: Patch &amp; Compliance</div>
-        <div class="tl-time">3–4 months — Matches HCL BigFix</div>
-      </div>
-    </div>
-    <div class="card-grid">
-      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>SRU Patch Management</h4><p>Automated IPS patching with rollback</p><ul><li><code>pkg update --accept --be-name</code></li><li>ZFS Boot Environment creation before patching</li><li><code>beadm activate</code> for rollback on failure</li><li>SRU level verification after patching</li></ul></div>
-      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Compliance Scanning</h4><p>CIS/STIG via native C engine</p><ul><li>Native compliance engine in C — NO JRE (beats Tanium)</li><li>CIS Solaris 11 benchmark checks</li><li>DISA STIG V3R2 evaluation</li><li>Custom policy support</li></ul></div>
-      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Vulnerability Assessment</h4><p>CVE matching against packages</p><ul><li>Map installed IPS packages to CVE database</li><li>Severity scoring and reporting</li><li>Auto-remediation via patch deployment</li></ul></div>
-      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Service &amp; SW Management</h4><p>SMF control + software deployment</p><ul><li><code>svcs/svcadm/svccfg</code> for SMF</li><li><code>pkg install</code> for IPS deployment</li><li>Script deployment + remote execution</li></ul></div>
-    </div>
-
-    <div class="timeline" style="margin-top:2rem">
-      <div class="tl-item p3">
-        <div class="tl-title">Phase 3: Market Differentiation</div>
-        <div class="tl-time">4–6 months — Features NO competitor has</div>
-      </div>
-    </div>
-    <div class="card-grid">
-      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>DTrace Integration</h4><p>Production-safe application/kernel tracing</p><ul><li>Embed USDT probes in agent binary</li><li><code>libdtrace</code> C API for probe management</li><li>Zero overhead when probes disabled</li><li>Enable tracing from EC console</li></ul></div>
-      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>Real-time FIM</h4><p>Kernel-level file change monitoring</p><ul><li><code>port_associate(PORT_SOURCE_FILE)</code></li><li>Event port for file modify/delete/rename</li><li>Solaris equivalent of Linux inotify</li><li>PCI DSS / HIPAA compliance requirement</li></ul></div>
-      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>Zone Lifecycle Management</h4><p>Full zone control from EC console</p><ul><li><code>zonecfg</code> for zone configuration</li><li><code>zoneadm install/boot/halt/clone</code></li><li><code>libzonecfg</code> for programmatic access</li><li>Zone migration between hosts</li></ul></div>
-      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>ZFS Snapshots + Solaris Audit</h4><p>Data protection + security events</p><ul><li><code>libzfs</code> for snapshot/clone management</li><li>Schedule automated ZFS snapshots</li><li>BSM audit trail parsing for security</li><li>Alert on privilege escalation, login failures</li></ul></div>
-    </div>
-
-    <h3>Feature Implementation Approach</h3>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>Feature</th><th>Solaris API</th><th>C Implementation Approach</th><th>Phase</th></tr></thead>
-      <tbody>
-        <tr><td>HW Inventory</td><td><code>kstat</code></td><td><code>kstat_open()</code> → iterate chains → <code>kstat_read()</code> for cpu_info, unix:system_pages, sd (disk)</td><td>P1</td></tr>
-        <tr><td>SW Inventory</td><td><code>pkg/pkginfo</code></td><td><code>popen("pkg list -H")</code> parse output; <code>popen("pkginfo -l")</code> for SVR4</td><td>P1</td></tr>
-        <tr><td>Network Config</td><td>Sockets</td><td><code>getifaddrs()</code> iterate linked list; extract AF_INET/AF_INET6 addresses, flags, masks</td><td>P1</td></tr>
-        <tr><td>Process List</td><td><code>/proc</code></td><td>Scan <code>/proc/</code> dirs; read <code>psinfo_t</code> struct from <code>/proc/pid/psinfo</code></td><td>P1</td></tr>
-        <tr><td>Zone Detection</td><td>zonename</td><td><code>getzonenamebyid()</code> or <code>popen("zonename")</code>; check <code>/etc/zones/</code></td><td>P1</td></tr>
-        <tr><td>SRU Patching</td><td>IPS</td><td><code>system("beadm create backup_BE")</code> → <code>system("pkg update --accept")</code> → verify → rollback on error</td><td>P2</td></tr>
-        <tr><td>SMF Control</td><td>SMF</td><td><code>popen("svcs -a -H -o fmri,state")</code>; <code>system("svcadm enable/disable fmri")</code></td><td>P2</td></tr>
-        <tr><td>Compliance</td><td>Multiple</td><td>Native C check engine: read config files, compare against CIS/STIG rules, report deviations</td><td>P2</td></tr>
-        <tr><td>DTrace Probes</td><td><code>libdtrace</code></td><td><code>dtrace_open()</code> → <code>dtrace_program_strcompile()</code> → <code>dtrace_go()</code>; consumer callback for events</td><td>P3</td></tr>
-        <tr><td>Real-time FIM</td><td>Event Ports</td><td><code>port_create()</code> → <code>port_associate(PORT_SOURCE_FILE, path)</code> → <code>port_get()</code> event loop</td><td>P3</td></tr>
-        <tr><td>Zone Lifecycle</td><td><code>libzonecfg</code></td><td><code>zonecfg_get_handle()</code> for config; <code>system("zoneadm -z name install/boot/halt")</code></td><td>P3</td></tr>
-        <tr><td>ZFS Snapshots</td><td><code>libzfs</code></td><td><code>libzfs_init()</code> → <code>zfs_open()</code> → <code>zfs_snapshot()</code>; list/destroy via libzfs handles</td><td>P3</td></tr>
-        <tr><td>BSM Audit</td><td>Solaris Audit</td><td>Read <code>/var/audit/</code> trail files; parse BSM token records; filter for security events</td><td>P3</td></tr>
-      </tbody>
-    </table></div>
-  </div>
-</section>
 
 <footer>
   <p>Solaris Endpoint Agent — Competitor Intelligence &amp; Implementation Guide</p>
