@@ -3,39 +3,771 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solaris Endpoint Agent — Competitor Intelligence</title>
+<title>Solaris Endpoint Agent — Competitor Intelligence & Implementation Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>:root{--bg:#06090f;--bg2:#0c1018;--s:#111724;--s2:#161e2e;--s3:#1c2640;--bd:#1e2d47;--bdh:#2a4070;--t:#c8d3e3;--t2:#8899b4;--h:#eaf0fa;--cy:#22d3ee;--bl:#3b82f6;--vi:#8b5cf6;--gn:#10b981;--rd:#ef4444;--am:#f59e0b;--or:#f97316;--m:'IBM Plex Mono',monospace;--f:'DM Sans',sans-serif}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:15px}body{font-family:var(--f);background:var(--bg);color:var(--t);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(34,211,238,.03) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(34,211,238,.03) 60px);pointer-events:none;z-index:0}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--bdh);border-radius:3px}.rv{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}.rv.vis{opacity:1;transform:translateY(0)}nav{position:sticky;top:0;z-index:200;background:rgba(6,9,15,.88);backdrop-filter:blur(20px) saturate(1.6);border-bottom:1px solid var(--bd);transition:box-shadow .3s}nav.sc{box-shadow:0 4px 30px rgba(0,0,0,.5)}.ni{max-width:1280px;margin:0 auto;display:flex;align-items:center;height:52px;padding:0 1.5rem;gap:1rem;overflow-x:auto}.nl{font-family:var(--m);font-weight:600;font-size:.95rem;color:var(--h);white-space:nowrap;flex-shrink:0}.nl span{color:var(--cy)}.nl::before{content:'> ';color:var(--cy);opacity:.5}.nk{display:flex;gap:.15rem;margin-left:auto}.nk a{color:var(--t2);text-decoration:none;font-size:.78rem;font-weight:500;padding:.4rem .7rem;border-radius:6px;white-space:nowrap;transition:all .2s}.nk a:hover,.nk a.ac{color:var(--cy);background:rgba(34,211,238,.06)}.hero{position:relative;max-width:1280px;margin:0 auto;padding:6rem 1.5rem 4rem}.hero::after{content:'';position:absolute;top:20%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(34,211,238,.06) 0%,transparent 70%);pointer-events:none}.ey{font-family:var(--m);font-size:.75rem;color:var(--cy);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem;opacity:.8}.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;color:var(--h);line-height:1.08;letter-spacing:-.04em}.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--cy),var(--bl));-webkit-background-clip:text;-webkit-text-fill-color:transparent}.hd{font-size:1.1rem;color:var(--t2);margin-top:1.2rem;max-width:650px;line-height:1.8}.hs{display:flex;gap:1.5rem;margin-top:2.5rem;flex-wrap:wrap}.hst{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:1rem 1.4rem;min-width:160px}.hst .v{font-family:var(--m);font-size:1.8rem;font-weight:700;line-height:1}.hst .l{font-size:.72rem;color:var(--t2);margin-top:.3rem;text-transform:uppercase;letter-spacing:.05em}.vc{color:var(--cy)}.vr{color:var(--rd)}.vg{color:var(--gn)}.va{color:var(--am)}sec{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:4rem 1.5rem}sec+sec{border-top:1px solid var(--bd)}.sl{font-family:var(--m);font-size:.7rem;color:var(--cy);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}sec h2{font-size:2rem;font-weight:800;color:var(--h);letter-spacing:-.03em;line-height:1.2}sec h2 span{color:var(--cy)}sec h3{font-size:1.2rem;font-weight:700;color:var(--h);margin:2rem 0 .7rem}sec p{margin-bottom:.7rem;max-width:850px}.tabs{display:flex;gap:.25rem;margin:1.5rem 0 .75rem;background:var(--s);border-radius:10px;padding:4px;width:fit-content;border:1px solid var(--bd);flex-wrap:wrap}.tab{font-family:var(--m);font-size:.78rem;font-weight:500;padding:.5rem 1.1rem;border-radius:8px;border:none;background:transparent;color:var(--t2);cursor:pointer;transition:all .25s;white-space:nowrap}.tab:hover{color:var(--h)}.tab.ac{background:var(--cy);color:var(--bg);font-weight:600}.tc{display:none;animation:fs .4s ease}.tc.ac{display:block}@keyframes fs{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.ex{border:1px solid var(--bd);border-radius:10px;margin:.75rem 0;overflow:hidden;transition:border-color .2s}.ex:hover{border-color:var(--bdh)}.eh{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;cursor:pointer;background:var(--s);user-select:none;transition:background .2s}.eh:hover{background:var(--s2)}.et{font-weight:600;color:var(--h);font-size:.95rem}.em{font-family:var(--m);font-size:.72rem;color:var(--t2);margin-left:auto;margin-right:.75rem}.ei{width:20px;height:20px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--cy);transition:transform .3s;flex-shrink:0}.ex.op .ei{transform:rotate(180deg)}.eb{padding:0 1.2rem;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}.ex.op .eb{max-height:3000px;padding:1rem 1.2rem 1.2rem}.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--bd);margin:1rem 0}table{width:100%;border-collapse:collapse;font-size:.82rem}thead th{background:var(--s2);color:var(--h);font-weight:600;text-align:left;padding:.65rem .85rem;border-bottom:2px solid var(--bd);white-space:nowrap;font-family:var(--m);font-size:.72rem;letter-spacing:.03em;text-transform:uppercase;position:sticky;top:0}tbody td{padding:.55rem .85rem;border-bottom:1px solid rgba(30,45,71,.5);vertical-align:top}tbody tr:hover{background:rgba(34,211,238,.03)}td:first-child{font-weight:600;color:var(--h);white-space:nowrap}.y{color:var(--gn);font-weight:600}.n{color:var(--rd);font-weight:600}.w{color:var(--am);font-weight:600}.d{color:var(--t2)}code{font-family:var(--m);font-size:.82em;background:var(--s2);padding:.15em .4em;border-radius:4px;color:var(--cy)}.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1rem;margin:1.5rem 0}.cd{background:var(--s);border:1px solid var(--bd);border-radius:12px;padding:1.5rem;transition:border-color .3s,transform .3s,box-shadow .3s}.cd:hover{border-color:var(--cy);transform:translateY(-3px);box-shadow:0 8px 30px rgba(34,211,238,.06)}.ct{font-family:var(--m);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px;display:inline-block;margin-bottom:.75rem}.ct.hi{background:rgba(16,185,129,.12);color:var(--gn)}.ct.md{background:rgba(239,68,68,.12);color:var(--rd)}.cd h4{font-size:1.05rem;font-weight:700;color:var(--h);margin-bottom:.4rem}.cd p{font-size:.88rem;color:var(--t2);margin-bottom:0}.cd ul{list-style:none;padding:0;margin-top:.5rem}.cd li{padding:.2rem 0 .2rem 1.1rem;position:relative;font-size:.85rem}.cd li::before{content:'';position:absolute;left:0;top:.55rem;width:5px;height:5px;border-radius:50%;background:var(--rd)}.sp{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.pl{display:inline-flex;align-items:center;gap:.4rem;background:var(--s);border:1px solid var(--bd);border-radius:999px;padding:.35rem .85rem;font-size:.78rem;font-weight:500}.pl .dt{width:7px;height:7px;border-radius:50%;flex-shrink:0}.br{display:flex;align-items:center;gap:.75rem;margin:.4rem 0}.bl{font-family:var(--m);font-size:.72rem;color:var(--t2);width:110px;flex-shrink:0;text-align:right}.bt{flex:1;height:22px;background:var(--s);border-radius:6px;overflow:hidden}.bf{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:.5rem;font-family:var(--m);font-size:.68rem;font-weight:600;color:var(--bg);transition:width 1.2s cubic-bezier(.22,1,.36,1)}.bf.b1{background:linear-gradient(90deg,var(--bl),#60a5fa)}.bf.b2{background:linear-gradient(90deg,var(--vi),#a78bfa)}.bf.b3{background:linear-gradient(90deg,var(--or),#fb923c)}footer{max-width:1280px;margin:0 auto;padding:3rem 1.5rem;border-top:1px solid var(--bd);text-align:center}footer p{font-size:.78rem;color:var(--t2)}footer .ms{font-family:var(--m);font-size:.7rem;color:#4a5568;margin-top:.5rem}@media(max-width:768px){.hero{padding:3rem 1rem 2rem}sec{padding:2.5rem 1rem}.hero h1{font-size:2rem}.hs{gap:.75rem}.hst{min-width:130px;padding:.75rem 1rem}.cg{grid-template-columns:1fr}.tabs{width:100%}.bl{width:80px;font-size:.65rem}}</style>
+<style>
+:root {
+  --bg: #060a12; --bg2: #0b1120; --s: #0f1729; --s2: #151f35; --s3: #1a2745;
+  --bd: #1e2d4a; --bdh: #2a4070; --t: #c8d3e3; --t2: #8899b4; --h: #eaf0fa;
+  --cy: #22d3ee; --bl: #3b82f6; --vi: #8b5cf6; --gn: #10b981; --rd: #ef4444;
+  --am: #f59e0b; --or: #f97316;
+  --mono: 'IBM Plex Mono', monospace; --sans: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 15px; }
+body {
+  font-family: var(--sans); background: var(--bg); color: var(--t);
+  line-height: 1.75; overflow-x: hidden;
+}
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(34,211,238,.025) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(34,211,238,.025) 60px);
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--bdh); border-radius: 3px; }
+
+/* Reveal */
+.rv { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.rv.vis { opacity: 1; transform: translateY(0); }
+
+/* Nav */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(6,10,18,.9); backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--bd); transition: box-shadow .3s;
+}
+nav.sc { box-shadow: 0 4px 30px rgba(0,0,0,.5); }
+.nav-inner {
+  max-width: 1300px; margin: 0 auto; display: flex; align-items: center;
+  height: 54px; padding: 0 2rem; gap: 1.5rem;
+}
+.nav-logo {
+  font-family: var(--mono); font-weight: 600; font-size: .92rem;
+  color: var(--h); white-space: nowrap; flex-shrink: 0;
+}
+.nav-logo span { color: var(--cy); }
+.nav-logo::before { content: '> '; color: var(--cy); opacity: .4; }
+.nav-links { display: flex; gap: .2rem; margin-left: auto; overflow-x: auto; }
+.nav-links a {
+  color: var(--t2); text-decoration: none; font-size: .78rem; font-weight: 500;
+  padding: .4rem .75rem; border-radius: 6px; white-space: nowrap; transition: all .2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--cy); background: rgba(34,211,238,.07); }
+
+/* Layout */
+.wrap { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+section { position: relative; z-index: 1; padding: 4rem 0; }
+section + section { border-top: 1px solid var(--bd); }
+.section-label {
+  font-family: var(--mono); font-size: .7rem; color: var(--cy);
+  letter-spacing: .14em; text-transform: uppercase; margin-bottom: .5rem;
+}
+h2 { font-size: 2rem; font-weight: 800; color: var(--h); letter-spacing: -.03em; line-height: 1.2; margin-bottom: .75rem; }
+h2 span { color: var(--cy); }
+h3 { font-size: 1.15rem; font-weight: 700; color: var(--h); margin: 2rem 0 .6rem; }
+h4 { font-size: .95rem; font-weight: 700; color: var(--am); margin: 1.5rem 0 .4rem; }
+p { margin-bottom: .6rem; }
+p.note { color: var(--t2); font-size: .88rem; font-style: italic; }
+strong { color: var(--h); }
+code {
+  font-family: var(--mono); font-size: .82em; background: var(--s2);
+  padding: .15em .4em; border-radius: 4px; color: var(--cy);
+}
+
+/* Hero */
+.hero { padding: 5.5rem 0 3.5rem; position: relative; }
+.hero::after {
+  content: ''; position: absolute; top: 10%; right: -5%; width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(34,211,238,.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--mono); font-size: .73rem; color: var(--cy);
+  letter-spacing: .16em; text-transform: uppercase; margin-bottom: .8rem; opacity: .8;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem); font-weight: 800;
+  color: var(--h); line-height: 1.1; letter-spacing: -.04em;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--cy), var(--bl));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-desc { font-size: 1.05rem; color: var(--t2); margin-top: 1rem; max-width: 660px; line-height: 1.8; }
+.stats-row { display: flex; gap: 1.25rem; margin-top: 2.2rem; flex-wrap: wrap; }
+.stat-card {
+  background: var(--s); border: 1px solid var(--bd); border-radius: 10px;
+  padding: .9rem 1.3rem; min-width: 150px;
+}
+.stat-val { font-family: var(--mono); font-size: 1.7rem; font-weight: 700; line-height: 1; }
+.stat-lbl { font-size: .7rem; color: var(--t2); margin-top: .25rem; text-transform: uppercase; letter-spacing: .06em; }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--bd); margin: 1rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+thead th {
+  background: var(--s2); color: var(--h); font-weight: 600; text-align: left;
+  padding: .65rem .9rem; border-bottom: 2px solid var(--bd); white-space: nowrap;
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase;
+}
+tbody td { padding: .55rem .9rem; border-bottom: 1px solid rgba(30,45,71,.4); vertical-align: top; }
+tbody tr:hover { background: rgba(34,211,238,.025); }
+td:first-child { font-weight: 600; color: var(--h); }
+.y { color: var(--gn); font-weight: 600; }
+.n { color: var(--rd); font-weight: 600; }
+.w { color: var(--am); font-weight: 600; }
+.d { color: var(--t2); }
+
+/* Pills */
+.pills { display: flex; flex-wrap: wrap; gap: .45rem; margin: 1rem 0; }
+.pill {
+  display: inline-flex; align-items: center; gap: .35rem;
+  background: var(--s); border: 1px solid var(--bd); border-radius: 999px;
+  padding: .3rem .8rem; font-size: .76rem; font-weight: 500;
+}
+.pill .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* Expandable */
+.expand {
+  border: 1px solid var(--bd); border-radius: 10px; margin: .6rem 0;
+  overflow: hidden; transition: border-color .2s;
+}
+.expand:hover { border-color: var(--bdh); }
+.expand-head {
+  display: flex; align-items: center; padding: .9rem 1.2rem;
+  cursor: pointer; background: var(--s); user-select: none; transition: background .2s; gap: .75rem;
+}
+.expand-head:hover { background: var(--s2); }
+.expand-title { font-weight: 600; color: var(--h); font-size: .92rem; flex: 1; }
+.expand-meta { font-family: var(--mono); font-size: .7rem; color: var(--t2); }
+.expand-icon {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--s2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; color: var(--cy); transition: transform .3s; flex-shrink: 0;
+}
+.expand.open .expand-icon { transform: rotate(180deg); }
+.expand-body {
+  padding: 0 1.2rem; max-height: 0; overflow: hidden;
+  transition: max-height .5s ease, padding .3s ease;
+}
+.expand.open .expand-body { max-height: 5000px; padding: 1rem 1.2rem 1.2rem; }
+
+/* Tabs */
+.tabs {
+  display: flex; gap: .2rem; margin: 1.5rem 0 .75rem; background: var(--s);
+  border-radius: 10px; padding: 4px; border: 1px solid var(--bd); flex-wrap: wrap; width: fit-content;
+}
+.tab {
+  font-family: var(--mono); font-size: .75rem; font-weight: 500;
+  padding: .45rem 1rem; border-radius: 8px; border: none;
+  background: transparent; color: var(--t2); cursor: pointer; transition: all .25s; white-space: nowrap;
+}
+.tab:hover { color: var(--h); }
+.tab.active { background: var(--cy); color: var(--bg); font-weight: 600; }
+.tab-content { display: none; animation: fadeIn .4s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Cards */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.card {
+  background: var(--s); border: 1px solid var(--bd); border-radius: 12px; padding: 1.4rem;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+}
+.card:hover { border-color: var(--cy); transform: translateY(-2px); box-shadow: 0 6px 25px rgba(34,211,238,.05); }
+.card-tag {
+  font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: .2rem .55rem; border-radius: 999px; display: inline-block; margin-bottom: .6rem;
+}
+.tag-high { background: rgba(16,185,129,.12); color: var(--gn); }
+.tag-med { background: rgba(249,115,22,.12); color: var(--or); }
+.tag-phase { background: rgba(59,130,246,.12); color: var(--bl); }
+.tag-p2 { background: rgba(139,92,246,.12); color: var(--vi); }
+.tag-p3 { background: rgba(16,185,129,.12); color: var(--gn); }
+.card h4 { font-size: 1rem; font-weight: 700; color: var(--h); margin: 0 0 .35rem 0; }
+.card p { font-size: .86rem; color: var(--t2); margin-bottom: .4rem; }
+.card ul { list-style: none; padding: 0; margin-top: .4rem; }
+.card li { padding: .15rem 0 .15rem 1rem; position: relative; font-size: .84rem; }
+.card li::before { content: ''; position: absolute; left: 0; top: .5rem; width: 5px; height: 5px; border-radius: 50%; background: var(--cy); }
+
+/* Bars */
+.bar-row { display: flex; align-items: center; gap: .75rem; margin: .35rem 0; }
+.bar-label { font-family: var(--mono); font-size: .72rem; color: var(--t2); width: 100px; flex-shrink: 0; text-align: right; }
+.bar-track { flex: 1; height: 24px; background: var(--s); border-radius: 6px; overflow: hidden; }
+.bar-fill {
+  height: 100%; border-radius: 6px; display: flex; align-items: center;
+  padding-left: .5rem; font-family: var(--mono); font-size: .68rem; font-weight: 600;
+  color: var(--bg); transition: width 1.2s cubic-bezier(.22,1,.36,1);
+}
+.bar-bf { background: linear-gradient(90deg, var(--bl), #60a5fa); }
+.bar-tn { background: linear-gradient(90deg, var(--vi), #a78bfa); }
+.bar-iv { background: linear-gradient(90deg, var(--or), #fb923c); }
+
+/* Callout */
+.callout {
+  background: var(--s2); border-left: 4px solid var(--cy); border-radius: 0 10px 10px 0;
+  padding: 1rem 1.25rem; margin: 1rem 0; font-size: .9rem;
+}
+.callout.warn { border-left-color: var(--am); }
+.callout.good { border-left-color: var(--gn); }
+.callout.bad { border-left-color: var(--rd); }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 2.5rem; margin: 1.5rem 0; }
+.timeline::before { content: ''; position: absolute; left: 9px; top: 0; bottom: 0; width: 2px; background: var(--bd); }
+.tl-item { position: relative; margin-bottom: 2rem; }
+.tl-item::before {
+  content: ''; position: absolute; left: -2.5rem; top: .3rem;
+  width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--bg); z-index: 1;
+}
+.tl-item.p1::before { background: var(--bl); }
+.tl-item.p2::before { background: var(--vi); }
+.tl-item.p3::before { background: var(--gn); }
+.tl-title { font-weight: 700; color: var(--h); font-size: 1.05rem; margin-bottom: .3rem; }
+.tl-time { font-family: var(--mono); font-size: .72rem; color: var(--t2); margin-bottom: .3rem; }
+
+/* Code block */
+.codeblock {
+  background: var(--s); border: 1px solid var(--bd); border-radius: 8px;
+  padding: 1rem 1.2rem; font-family: var(--mono); font-size: .78rem;
+  color: var(--t); overflow-x: auto; margin: .75rem 0; line-height: 1.8;
+  white-space: pre;
+}
+.codeblock .comment { color: var(--t2); }
+.codeblock .keyword { color: var(--cy); }
+.codeblock .string { color: var(--gn); }
+.codeblock .func { color: var(--am); }
+
+/* Footer */
+footer {
+  max-width: 1300px; margin: 0 auto; padding: 3rem 2rem;
+  border-top: 1px solid var(--bd); text-align: center;
+}
+footer p { font-size: .78rem; color: var(--t2); }
+
+@media (max-width: 768px) {
+  .wrap { padding: 0 1rem; }
+  .nav-inner { padding: 0 1rem; }
+  .hero { padding: 3rem 0 2rem; }
+  section { padding: 2.5rem 0; }
+  .hero h1 { font-size: 2rem; }
+  .stats-row { gap: .6rem; }
+  .stat-card { min-width: 120px; padding: .7rem .9rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .tabs { width: 100%; }
+  .bar-label { width: 70px; font-size: .65rem; }
+}
+</style>
 </head>
 <body>
-<nav id="tn"><div class="ni"><div class="nl"><span>solaris</span>::agent_intel</div><div class="nk"><a href="#overview">Overview</a><a href="#bigfix">BigFix</a><a href="#tanium">Tanium</a><a href="#ivanti">Ivanti</a><a href="#h2h">Head-to-Head</a><a href="#apis">API Deep Dive</a><a href="#gaps">Gaps</a></div></div></nav>
 
-<div class="hero rv"><div class="ey">Competitor Intelligence Report</div><h1>Who Supports <em>Solaris</em><br>Endpoint Agents?</h1><p class="hd">A deep-dive into the only three endpoint management products with native Oracle Solaris agents — their architecture, language, minimum supported versions, features, Solaris API usage, and what they have not built yet.</p><div class="hs"><div class="hst"><div class="v vc">3</div><div class="l">With Solaris Agent</div></div><div class="hst"><div class="v vr">12+</div><div class="l">Without</div></div><div class="hst"><div class="v vg">C/C++</div><div class="l">Agent Language (All 3)</div></div><div class="hst"><div class="v va">Sol 10u11</div><div class="l">Earliest Supported</div></div></div></div>
+<nav id="topnav">
+  <div class="nav-inner">
+    <div class="nav-logo"><span>solaris</span>::agent_intel</div>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#bigfix">BigFix</a>
+      <a href="#tanium">Tanium</a>
+      <a href="#ivanti">Ivanti</a>
+      <a href="#h2h">Head-to-Head</a>
+      <a href="#apis">API Deep Dive</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#roadmap">Implementation</a>
+    </div>
+  </div>
+</nav>
 
-<sec id="overview" class="rv"><div class="sl">Section 01</div><h2>The <span>Landscape</span></h2><p>We evaluated 15+ endpoint management products. Only <strong>HCL BigFix</strong>, <strong>Tanium</strong>, and <strong>Ivanti EPM</strong> ship native Solaris agents. All others — Intune, NinjaOne, CrowdStrike, Atera, Datto, Workspace ONE, Action1, Automox, Pulseway, SyncroMSP, Hexnode — have zero Solaris support.</p><div class="tw"><table><thead><tr><th>Product</th><th>Vendor</th><th>Solaris</th><th>Min Version</th><th>SPARC</th><th>x86-64</th><th>Agent Lang</th></tr></thead><tbody><tr><td>HCL BigFix</td><td>HCL</td><td class="y">Yes</td><td>Solaris 11</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td></tr><tr><td>Tanium</td><td>Tanium</td><td class="y">Yes</td><td>Solaris 10u11</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td></tr><tr><td>Ivanti EPM</td><td>Ivanti</td><td class="y">Yes</td><td>Solaris 10</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td></tr><tr><td>ME Endpoint Central</td><td>Zoho</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Java / C</td></tr><tr><td>Microsoft Intune</td><td>Microsoft</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET / C++</td></tr><tr><td>NinjaOne</td><td>NinjaOne</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Go / C++</td></tr><tr><td>CrowdStrike</td><td>CrowdStrike</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>C (kernel)</td></tr><tr><td>Atera</td><td>Atera</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET/Node</td></tr><tr><td>Datto RMM</td><td>Kaseya</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET/C++</td></tr><tr><td>Workspace ONE</td><td>Omnissa</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Java/C++</td></tr><tr><td>Action1</td><td>Action1</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET/C++</td></tr><tr><td>Automox</td><td>Automox</td><td class="n">No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Go</td></tr></tbody></table></div></sec>
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero rv">
+  <div class="wrap">
+    <div class="hero-eyebrow">Competitor Intelligence &amp; Implementation Guide</div>
+    <h1>Who Supports <em>Solaris</em><br>Endpoint Agents?</h1>
+    <p class="hero-desc">A comprehensive deep-dive into the only three endpoint management products with native Oracle Solaris agents — their architecture, language, minimum supported versions, features, C API usage, and what they haven’t built yet. Plus a complete implementation roadmap for ManageEngine Endpoint Central.</p>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val" style="color:var(--cy)">3</div><div class="stat-lbl">With Solaris Agent</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--rd)">12+</div><div class="stat-lbl">Without</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--gn)">C/C++</div><div class="stat-lbl">Agent Language (All 3)</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--am)">Sol 10u11</div><div class="stat-lbl">Earliest Supported</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--vi)">GCC</div><div class="stat-lbl">Compiler (All 3)</div></div>
+    </div>
+  </div>
+</section>
 
-<sec id="bigfix" class="rv"><div class="sl">Section 02 — Deep Dive</div><h2>HCL <span>BigFix</span></h2><p>BigFix Inc. (1997) → IBM (2010) → HCL (2018). Most feature-complete Solaris agent in the market.</p><div class="sp"><div class="pl"><div class="dt" style="background:var(--bl)"></div>C/C++ Agent</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>Solaris 11+ (SPARC &amp; x86)</div><div class="pl"><div class="dt" style="background:var(--am)"></div>Sol 10 Dropped 2018</div><div class="pl"><div class="dt" style="background:var(--cy)"></div>~40-50 MB</div><div class="pl"><div class="dt" style="background:var(--cy)"></div>~50-100 MB RSS</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>IPS .p5p pkg</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>SMF: BESClient</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>No JRE needed</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>SUNWlibC prereq</div></div><div class="ex" onclick="this.classList.toggle('op')"><div class="eh"><span class="et">Architecture &amp; Communication</span><span class="ei">▼</span></div><div class="eb"><p>Agent runs as SMF service <code>BESClient</code>. Relay hierarchy: Root Server → Relay(s) → Agent. Agents evaluate Fixlet relevance locally — report only on state change. Heartbeat ~15min. HTTP/HTTPS port 52311.</p><p><strong>Relevance Language</strong> — Declarative queries. <code>name of operating system</code> → "SunOS". Translates to <code>uname()</code>, <code>kstat_open()</code>, <code>pkg list</code> via C.</p><p><strong>ActionScript</strong> — Imperative remediation. Package ops → <code>pkg install</code> (IPS) / <code>pkgadd</code> (SVR4). Scripts via <code>sh -c</code>.</p></div></div><div class="ex" onclick="this.classList.toggle('op')"><div class="eh"><span class="et">Solaris C API Usage</span><span class="em">10 categories</span><span class="ei">▼</span></div><div class="eb"><div class="tw"><table><thead><tr><th>API</th><th>Usage</th><th>C Calls</th></tr></thead><tbody><tr><td>System ID</td><td>OS, hostname, arch</td><td><code>uname()</code>, <code>sysinfo(SI_ISALIST)</code>, <code>sysinfo(SI_PLATFORM)</code></td></tr><tr><td>Hardware</td><td>CPU, mem, disk</td><td><code>kstat_open()</code>, <code>kstat_read()</code>, <code>prtconf</code>, <code>prtdiag</code></td></tr><tr><td>Network</td><td>IPs, interfaces</td><td><code>getifaddrs()</code>, <code>ioctl(SIOCGIFCONF)</code></td></tr><tr><td>Filesystem</td><td>Mounts, ZFS</td><td><code>statvfs()</code>, <code>getmntent()</code>, <code>libzfs</code></td></tr><tr><td>Packages</td><td>SW inventory</td><td><code>pkg list</code> (IPS), <code>pkginfo</code> (SVR4)</td></tr><tr><td>Processes</td><td>Running procs</td><td><code>/proc/pid/psinfo</code></td></tr><tr><td>Services</td><td>SMF status</td><td><code>svcs -a</code>, <code>svcadm</code></td></tr><tr><td>Patching</td><td>SRU + rollback</td><td><code>pkg update --be-name</code> + <code>beadm</code></td></tr><tr><td>Files</td><td>Scan + hash</td><td><code>opendir()/readdir()</code> + SHA-256</td></tr><tr><td>Virtualization</td><td>LDom detect</td><td><code>ldm list</code>, kstat virt data</td></tr></tbody></table></div></div></div><div class="ex" onclick="this.classList.toggle('op')"><div class="eh"><span class="et">Patch Management — Boot Environment Rollback</span><span class="em">unique in market</span><span class="ei">▼</span></div><div class="eb"><p><strong>1.</strong> HCL maintains "Patches for Solaris 11" Fixlet site mapping Oracle SRUs to Fixlets</p><p><strong>2.</strong> Download plug-in authenticates with Oracle repo. Air-gapped: Solaris Download Cacher tool</p><p><strong>3.</strong> IPS Repo Management dashboard configures local mirrors</p><p><strong>4.</strong> Agent creates ZFS Boot Environment before patching → <code>pkg update</code> → rollback via <code>beadm activate</code> on failure</p><p><strong>5.</strong> Relevance verifies SRU level matches target</p><p style="margin-top:.7rem"><strong>Compliance:</strong> DISA STIG Solaris 11 V3R2 (SPARC + X86) updated June 2025. CIS benchmarks available. All native C++ — no JRE.</p></div></div><div class="ex" onclick="this.classList.toggle('op')"><div class="eh"><span class="et">Installation on Solaris 11</span><span class="em">.p5p since v9.5.13</span><span class="ei">▼</span></div><div class="eb"><p><strong>Prereq:</strong> SUNWlibC. <strong>Install:</strong> <code>pkg install -g BESAgent-*.p5p BESagent</code></p><p><strong>Global zone w/ children:</strong> Create local repo first → <code>pkgrepo create</code> → <code>pkgrecv</code> → <code>pkg set-publisher --search-first</code></p><p><strong>Upgrade:</strong> Self-updating Fixlet. <strong>Config:</strong> <code>/etc/opt/BESClient/actionsite.afxm</code></p></div></div></sec>
+<!-- ═══════════ SECTION 1: OVERVIEW ═══════════ -->
+<section id="overview" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 01</div>
+    <h2>The <span>Landscape</span></h2>
+    <p>We evaluated 15+ endpoint management products. Only <strong>HCL BigFix</strong>, <strong>Tanium</strong>, and <strong>Ivanti EPM</strong> ship native Solaris agents. All others — Intune, NinjaOne, CrowdStrike, Atera, Datto, Workspace ONE, Action1, Automox, Pulseway, SyncroMSP, Hexnode — have zero Solaris support.</p>
 
-<sec id="tanium" class="rv"><div class="sl">Section 03 — Deep Dive</div><h2><span>Tanium</span></h2><p>Founded 2007 by Orion Hindawi (co-founded BigFix). Rebuilt from scratch for speed. Patented P2P linear chain.</p><div class="sp"><div class="pl"><div class="dt" style="background:var(--vi)"></div>C/C++ Agent</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>Sol 10u11+ (SPARC &amp; x86)</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>Sol 11 (SPARC &amp; x86)</div><div class="pl"><div class="dt" style="background:var(--cy)"></div>~15-20 MB (smallest)</div><div class="pl"><div class="dt" style="background:var(--cy)"></div>~20-50 MB RSS</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>SMF: taniumclient</div><div class="pl"><div class="dt" style="background:var(--am)"></div>JRE for Comply module</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>15+ loadable modules</div></div><div class="ex" onclick="this.classList.toggle('op')"><div class="eh"><span class="et">Architecture — Linear Chain P2P</span><span class="em">&lt;15 sec for millions</span><span class="ei">▼</span></div><div class="eb"><p>Agents form dynamic linear chain. Server → leaders → neighbors → chain propagation. Results aggregate with summarization at each node. POSIX sockets on Solaris. <strong>Modular:</strong> Single binary + signed Client Extension (CX) <code>.so</code> files per module. Digital signature verification before loading.</p></div></div><div class="ex" onclick="this.classList.toggle('op')"><div class="eh"><span class="et">Module Support on Solaris</span><span class="em">15 modules — varying support</span><span class="ei">▼</span></div><div class="eb"><div class="tw"><table><thead><tr><th>Module</th><th>Purpose</th><th>Solaris</th><th>Limitation</th></tr></thead><tbody><tr><td>Interact</td><td>Real-time queries</td><td class="y">Full</td><td>Core platform</td></tr><tr><td>Asset</td><td>HW/SW inventory</td><td class="y">Full</td><td>kstat, procfs, pkg</td></tr><tr><td>Discover</td><td>Network discovery</td><td class="w">Level 2</td><td>Nmap unsupported; ARP/ping</td></tr><tr><td>Comply</td><td>Compliance/vuln</td><td class="y">Yes</td><td>Requires Oracle JRE 8 upload</td></tr><tr><td>Patch</td><td>OS patching</td><td class="w">Limited</td><td>Basic pkg; less automated</td></tr><tr><td>Deploy</td><td>SW deployment</td><td class="y">Yes</td><td>Packages, scripts, files</td></tr><tr><td>Enforce</td><td>Config policy</td><td class="w">Limited</td><td>Primarily Win/Linux CX</td></tr><tr><td>Threat Response</td><td>EDR</td><td class="n">No</td><td>NOT on Solaris</td></tr><tr><td>Impact</td><td>Lateral movement</td><td class="n">No</td><td>Win/Linux only</td></tr><tr><td>Integrity Monitor</td><td>FIM</td><td class="w">Basic</td><td>Hash only; no real-time</td></tr><tr><td>Reveal</td><td>DLP</td><td class="n">No</td><td>Win/Linux/macOS only</td></tr><tr><td>Performance</td><td>Monitoring</td><td class="w">Limited</td><td>Basic CPU/mem</td></tr><tr><td>Map</td><td>Network topology</td><td class="n">No</td><td>Not on Solaris</td></tr><tr><td>Trends</td><td>Historical</td><td class="y">Yes</td><td>Server-side</td></tr><tr><td>Connect</td><td>SIEM export</td><td class="y">Yes</td><td>Server-side</td></tr></tbody></table></div><p style="margin-top:.7rem"><strong>JRE limitation:</strong> Amazon Corretto (bundled default) does not support Solaris. Must manually upload Oracle JRE 8 for OVAL/SCAP compliance scanning.</p></div></div></sec>
+    <h3>Complete Support Matrix</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Product</th><th>Vendor</th><th>Solaris</th><th>Min Version</th><th>SPARC</th><th>x86-64</th><th>Agent Lang</th><th>Compiler</th></tr></thead>
+        <tbody>
+          <tr><td>HCL BigFix</td><td>HCL</td><td class="y">✅ Yes</td><td>Solaris 11</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td><td>GCC</td></tr>
+          <tr><td>Tanium</td><td>Tanium</td><td class="y">✅ Yes</td><td>Solaris 10u11</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td><td>GCC</td></tr>
+          <tr><td>Ivanti EPM</td><td>Ivanti</td><td class="y">✅ Yes</td><td>Solaris 10</td><td class="y">Yes</td><td class="y">Yes</td><td>C/C++</td><td>GCC</td></tr>
+          <tr><td>ME Endpoint Central</td><td>Zoho</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Java / C</td><td class="d">—</td></tr>
+          <tr><td>Microsoft Intune</td><td>Microsoft</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET / C++</td><td class="d">—</td></tr>
+          <tr><td>NinjaOne</td><td>NinjaOne</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Go / C++</td><td class="d">—</td></tr>
+          <tr><td>CrowdStrike Falcon</td><td>CrowdStrike</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>C (kernel)</td><td class="d">—</td></tr>
+          <tr><td>Atera</td><td>Atera</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET / Node</td><td class="d">—</td></tr>
+          <tr><td>Datto RMM</td><td>Kaseya</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET / C++</td><td class="d">—</td></tr>
+          <tr><td>Workspace ONE</td><td>Omnissa</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Java / C++</td><td class="d">—</td></tr>
+          <tr><td>Action1</td><td>Action1</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>.NET / C++</td><td class="d">—</td></tr>
+          <tr><td>Automox</td><td>Automox</td><td class="n">❌ No</td><td class="d">—</td><td class="n">No</td><td class="n">No</td><td>Go</td><td class="d">—</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-<sec id="ivanti" class="rv"><div class="sl">Section 04 — Deep Dive</div><h2><span>Ivanti</span> Endpoint Manager</h2><p>Descends from LANDesk (1990s). Weakest Solaris support — primarily inventory visibility.</p><div class="sp"><div class="pl"><div class="dt" style="background:var(--or)"></div>C/C++ Agent</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>Sol 10+ (SPARC &amp; x86)</div><div class="pl"><div class="dt" style="background:var(--cy)"></div>~30-40 MB</div><div class="pl"><div class="dt" style="background:var(--cy)"></div>~40-80 MB RSS</div><div class="pl"><div class="dt" style="background:var(--gn)"></div>No JRE</div></div><div class="tw"><table><thead><tr><th>Feature</th><th>Status</th><th>Notes</th></tr></thead><tbody><tr><td>HW inventory</td><td class="y">Yes</td><td>prtconf, kstat</td></tr><tr><td>SW inventory</td><td class="y">Yes</td><td>pkginfo + pkg list</td></tr><tr><td>SW distribution</td><td class="y">Yes</td><td>Script-based</td></tr><tr><td>Patch mgmt</td><td class="w">Very limited</td><td>No pre-built content</td></tr><tr><td>Remote control</td><td class="w">Basic VNC</td><td>Limited vs Windows</td></tr><tr><td>Compliance</td><td class="w">Basic</td><td>Policy checks; no SCAP</td></tr><tr><td>Vuln scanning</td><td class="n">No</td><td>—</td></tr><tr><td>EDR</td><td class="n">No</td><td>—</td></tr></tbody></table></div></sec>
+    <h3>Why Only C/C++ Works</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Reason</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>Dual architecture</td><td>Must compile natively for SPARC and x86-64. Go/Rust/.NET have no or limited SPARC support.</td></tr>
+          <tr><td>Zero runtime</td><td>Links only against libc + libsocket (always present). No JVM, .NET CLR, or Go runtime needed on endpoint.</td></tr>
+          <tr><td>All OS APIs are C</td><td>kstat, DTrace, ZFS, Zones, SMF, Doors, Event Ports — all C interfaces. Zero wrappers needed.</td></tr>
+          <tr><td>ABI guarantee</td><td>Oracle guarantees C binaries from Solaris 10 run unchanged on 11.4. No other language has this.</td></tr>
+          <tr><td>Small footprint</td><td>15–50 MB agents vs 100–500 MB for managed-language equivalents. Critical for Zones.</td></tr>
+          <tr><td>No GC pauses</td><td>Agents must have predictable, low-latency performance. C has no garbage collector.</td></tr>
+          <tr><td>Cross-platform</td><td>Same codebase with <code>#ifdef __sun</code> compiles for Solaris, AIX, HP-UX, Linux, macOS.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
-<sec id="h2h" class="rv"><div class="sl">Section 05</div><h2>Head-to-<span>Head</span></h2><h3>Feature Coverage (18 features)</h3><div style="max-width:600px;margin:1.5rem 0"><div class="br"><div class="bl">BigFix</div><div class="bt"><div class="bf b1" data-w="78%">14 / 18</div></div></div><div class="br"><div class="bl">Tanium</div><div class="bt"><div class="bf b2" data-w="67%">12 / 18</div></div></div><div class="br"><div class="bl">Ivanti</div><div class="bt"><div class="bf b3" data-w="39%">7 / 18</div></div></div></div><div class="tw"><table><thead><tr><th>Feature</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>Min Solaris</td><td>11</td><td>10u11</td><td>10</td></tr><tr><td>SPARC + x86</td><td class="y">Both</td><td class="y">Both</td><td class="y">Both</td></tr><tr><td>Agent size</td><td>40-50 MB</td><td class="y">15-20 MB</td><td>30-40 MB</td></tr><tr><td>Query speed</td><td>Minutes</td><td class="y">Seconds</td><td>Minutes</td></tr><tr><td>Communication</td><td>HTTPS relay</td><td>TCP P2P chain</td><td>HTTPS client-server</td></tr><tr><td>HW inventory</td><td class="y">Full</td><td class="y">Full</td><td class="y">Full</td></tr><tr><td>SW inventory</td><td class="y">IPS+SVR4</td><td class="y">IPS+SVR4</td><td class="y">IPS+SVR4</td></tr><tr><td>SRU patching</td><td class="y">Full + BE rollback</td><td class="w">Basic</td><td class="n">Manual</td></tr><tr><td>CIS/STIG</td><td class="y">Native (no JRE)</td><td class="w">SCAP (needs JRE)</td><td class="w">Basic</td></tr><tr><td>Vuln scan</td><td class="y">CVE match</td><td class="y">OVAL</td><td class="n">No</td></tr><tr><td>SW deploy</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td>Remote exec</td><td class="y">ActionScript</td><td class="y">Interact</td><td class="w">Limited</td></tr><tr><td>Zone/LDom</td><td class="y">LDom 2.0-3.4</td><td class="y">zonename</td><td class="w">Partial</td></tr><tr><td>BE rollback</td><td class="y">beadm</td><td class="n">No</td><td class="n">No</td></tr><tr><td>Remote ctrl</td><td class="y">VNC</td><td class="w">Limited</td><td class="w">Basic</td></tr><tr><td>EDR</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr><tr><td>Real-time FIM</td><td class="n">No</td><td class="w">Hash</td><td class="n">No</td></tr><tr><td>DTrace</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr></tbody></table></div><h3>Architecture</h3><div class="tw"><table><thead><tr><th>Aspect</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>DSL</td><td>Relevance + ActionScript</td><td>Tanium Sensors</td><td>Plugin system</td></tr><tr><td>Install pkg</td><td>IPS .p5p</td><td>SVR4 / IPS</td><td>SVR4</td></tr><tr><td>JRE dep</td><td class="y">None</td><td class="w">Comply only</td><td class="y">None</td></tr><tr><td>OpenSSL</td><td>Yes</td><td>Yes</td><td>Yes</td></tr><tr><td>Auto-update</td><td>Fixlet self-update</td><td>Module server</td><td>Manual</td></tr><tr><td>Compiler</td><td>GCC</td><td>GCC</td><td>GCC</td></tr></tbody></table></div></sec>
+<!-- The remaining sections follow the same pattern but I need to keep this within limits -->
+<!-- I'll generate the rest via the script -->
 
-<sec id="apis" class="rv"><div class="sl">Section 06</div><h2>Solaris <span>API</span> Deep Dive</h2><p>How each agent uses Solaris C APIs — tabbed by category:</p><div class="tabs" id="at"><button class="tab ac" onclick="st('at','ac','a1')">System ID</button><button class="tab" onclick="st('at','ac','a2')">Hardware</button><button class="tab" onclick="st('at','ac','a3')">Network</button><button class="tab" onclick="st('at','ac','a4')">Packages</button><button class="tab" onclick="st('at','ac','a5')">Services</button><button class="tab" onclick="st('at','ac','a6')">Patching</button><button class="tab" onclick="st('at','ac','a7')">Virtualization</button></div><div id="ac"><div class="tc ac" id="a1"><div class="tw"><table><thead><tr><th>Function</th><th>Returns</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td><code>uname()</code></td><td>OS name, release, machine</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td><code>sysinfo(SI_ISALIST)</code></td><td>Instruction set archs</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td><code>sysinfo(SI_PLATFORM)</code></td><td>HW platform string</td><td class="y">Yes</td><td class="y">Yes</td><td class="w">Partial</td></tr><tr><td><code>/etc/release</code></td><td>Full release + SRU</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td><code>zonename</code></td><td>Zone identity</td><td class="y">Yes</td><td class="y">Yes</td><td class="w">Partial</td></tr></tbody></table></div></div><div class="tc" id="a2"><div class="tw"><table><thead><tr><th>Source</th><th>Data</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td><code>kstat_open/read</code></td><td>CPU, mem, disk, NIC stats</td><td class="y">Yes</td><td class="y">Yes</td><td class="w">Partial</td></tr><tr><td><code>prtconf</code></td><td>Device tree, phys memory</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td><code>prtdiag</code></td><td>SPARC board/CPU layout</td><td class="y">Yes</td><td class="w">Limited</td><td class="n">No</td></tr><tr><td><code>/proc/pid/psinfo</code></td><td>Per-process stats</td><td class="y">Yes</td><td class="y">Yes</td><td class="w">Limited</td></tr><tr><td><code>statvfs()</code></td><td>FS capacity, free space</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr></tbody></table></div></div><div class="tc" id="a3"><div class="tw"><table><thead><tr><th>API</th><th>Data</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td><code>getifaddrs()</code></td><td>All interfaces + IPs</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td><code>ioctl(SIOCGIFCONF)</code></td><td>Interface config</td><td class="y">Yes</td><td class="y">Yes</td><td class="w">Partial</td></tr><tr><td>POSIX sockets</td><td>Agent comms</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td><code>/etc/resolv.conf</code></td><td>DNS config</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr></tbody></table></div></div><div class="tc" id="a4"><div class="tw"><table><thead><tr><th>System</th><th>API</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>IPS (Sol 11)</td><td><code>pkg list -H</code></td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td>SVR4 (legacy)</td><td><code>pkginfo -l</code></td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr><tr><td>IPS repo mgmt</td><td><code>pkg set-publisher</code></td><td class="y">Dashboard</td><td class="n">No</td><td class="n">No</td></tr><tr><td>File discovery</td><td>FS scan + hash</td><td class="y">Yes</td><td class="y">Yes</td><td class="w">Limited</td></tr></tbody></table></div></div><div class="tc" id="a5"><div class="tw"><table><thead><tr><th>Operation</th><th>Tool</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>List services</td><td><code>svcs -a</code></td><td class="y">Yes</td><td class="y">Yes</td><td class="w">Partial</td></tr><tr><td>Start/stop</td><td><code>svcadm</code></td><td class="y">Yes</td><td class="y">Yes</td><td class="n">No</td></tr><tr><td>Properties</td><td><code>svccfg</code></td><td class="y">Yes</td><td class="w">Limited</td><td class="n">No</td></tr><tr><td>Agent as SMF</td><td>SMF framework</td><td class="y">BESClient</td><td class="y">taniumclient</td><td class="y">Yes</td></tr></tbody></table></div></div><div class="tc" id="a6"><div class="tw"><table><thead><tr><th>Capability</th><th>Method</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>SRU patching</td><td><code>pkg update</code></td><td class="y">Automated Fixlets</td><td class="w">Basic</td><td class="n">Manual</td></tr><tr><td>BE rollback</td><td><code>beadm</code></td><td class="y">Automatic</td><td class="n">No</td><td class="n">No</td></tr><tr><td>Pre-built content</td><td>SRU→Fixlet map</td><td class="y">HCL site</td><td class="w">Limited</td><td class="n">No</td></tr><tr><td>Air-gapped</td><td>Download cacher</td><td class="y">Yes</td><td class="w">Manual</td><td class="n">No</td></tr><tr><td>Compliance</td><td>SRU verification</td><td class="y">Relevance</td><td class="y">Sensors</td><td class="n">No</td></tr></tbody></table></div></div><div class="tc" id="a7"><div class="tw"><table><thead><tr><th>Tech</th><th>Detection</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>Zones</td><td><code>zonename</code>, <code>/etc/zones</code></td><td class="y">Global+non-global</td><td class="y">Global+non-global</td><td class="w">Basic</td></tr><tr><td>LDoms</td><td><code>ldm list</code>, kstat</td><td class="y">LDom 2.0-3.4</td><td class="w">Basic</td><td class="n">No</td></tr><tr><td>Zone lifecycle</td><td><code>zonecfg/zoneadm</code></td><td class="n">Detect only</td><td class="n">Detect only</td><td class="n">No</td></tr></tbody></table></div></div></div></sec>
+<!-- ═══════════ SECTION 2: BIGFIX ═══════════ -->
+<section id="bigfix" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 02 — Deep Dive</div>
+    <h2>HCL <span>BigFix</span></h2>
+    <p>BigFix Inc. (1997) → IBM (2010) → HCL Technologies (2018). Most feature-complete Solaris agent in the market.</p>
 
-<sec id="gaps" class="rv"><div class="sl">Section 07</div><h2>Feature <span>Gaps</span></h2><p>Available on Windows/Linux in all three — <strong>none built on Solaris</strong>:</p><div class="cg"><div class="cd gap"><div class="ct hi">High Opportunity</div><h4>EDR / Threat Detection</h4><p>No competitor provides EDR on Solaris.</p><ul><li>API: <code>DTrace USDT probes</code> — app/kernel tracing</li><li>API: <code>Solaris Audit (BSM)</code> — security event trail</li><li>Detect privilege escalation, unauthorized access</li></ul></div><div class="cd gap"><div class="ct hi">High Opportunity</div><h4>Real-time FIM</h4><p>Tanium has hash-based; none do real-time kernel events.</p><ul><li>API: <code>port_associate(PORT_SOURCE_FILE)</code></li><li>Kernel-level — Solaris equivalent of inotify</li><li>Required for PCI DSS, HIPAA, SOX</li></ul></div><div class="cd gap"><div class="ct hi">High Opportunity</div><h4>DTrace Monitoring</h4><p>Solaris's most powerful tool — untapped by all competitors.</p><ul><li>API: <code>libdtrace</code> C API</li><li>USDT probes — zero overhead when disabled</li><li>Production-safe application tracing</li></ul></div><div class="cd gap"><div class="ct hi">High Opportunity</div><h4>Zone Lifecycle Management</h4><p>All detect; none manage create/clone/migrate/delete.</p><ul><li>APIs: <code>zonecfg</code>, <code>zoneadm</code>, <code>libzonecfg</code></li><li>Primary Solaris virtualization technology</li><li>Full lifecycle from endpoint console</li></ul></div><div class="cd gap"><div class="ct hi">High Opportunity</div><h4>ZFS Snapshot Management</h4><p>No competitor manages ZFS from their console.</p><ul><li>API: <code>libzfs</code> C API</li><li>Trigger, schedule, manage snapshots/clones</li><li>Integrate with patching for rollback</li></ul></div><div class="cd gap"><div class="ct md">Medium Opportunity</div><h4>USB Device Control</h4><p>Available on Win/Linux — absent on Solaris.</p><ul><li>APIs: <code>devfsadm</code>, <code>syseventd</code></li><li>Different device model — dedicated work needed</li></ul></div></div></sec>
+    <div class="pills">
+      <div class="pill"><div class="dot" style="background:var(--bl)"></div>C/C++ Agent</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>Solaris 11+ (SPARC &amp; x86)</div>
+      <div class="pill"><div class="dot" style="background:var(--am)"></div>Sol 10 Dropped 2018</div>
+      <div class="pill"><div class="dot" style="background:var(--cy)"></div>~40–50 MB binary</div>
+      <div class="pill"><div class="dot" style="background:var(--cy)"></div>~50–100 MB RSS</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>IPS .p5p package</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>SMF: BESClient</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>No JRE needed</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>SUNWlibC prereq</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>DISA STIG V3R2</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>OpenSSL (TLS 1.2+)</div>
+    </div>
 
-<footer><p>Solaris Endpoint Agent — Competitor Intelligence</p><p>HCL BigFix 11.0 · Tanium Cloud 2024 · Ivanti Neurons 2024 · Oracle Solaris 11.4 SRU 81</p><div class="ms">march 2026 · UEMS agent framework research</div></footer>
+    <div class="expand" onclick="this.classList.toggle('open')">
+      <div class="expand-head">
+        <span class="expand-title">Architecture &amp; Communication Model</span>
+        <span class="expand-meta">Relay hierarchy</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="expand-body">
+        <p>Agent runs as SMF service <code>BESClient</code>. Communication follows a <strong>relay hierarchy</strong>: Root Server → Relay(s) → Agent. Agents evaluate "Fixlet" relevance locally — only report back when a condition changes. Default heartbeat ~15 minutes. Protocol: HTTP/HTTPS (port 52311).</p>
+        <p><strong>Cross-platform DSLs:</strong></p>
+        <p><strong>Relevance Language</strong> — Declarative query engine. <code>name of operating system</code> returns "SunOS" on Solaris. Under the hood, translates to <code>uname()</code>, <code>kstat_open()</code>, <code>pkg list</code> parsing via C function calls.</p>
+        <p><strong>ActionScript</strong> — Imperative remediation engine. Package operations become <code>pkg install</code> (IPS) or <code>pkgadd</code> (SVR4). Script execution via <code>sh -c</code>. Same ActionScript template works across Windows, Linux, Solaris, AIX.</p>
+      </div>
+    </div>
+
+    <div class="expand" onclick="this.classList.toggle('open')">
+      <div class="expand-head">
+        <span class="expand-title">Solaris C API Usage</span>
+        <span class="expand-meta">10 API categories</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="expand-body">
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Solaris API</th><th>BigFix Usage</th><th>C Function Calls</th></tr></thead>
+          <tbody>
+            <tr><td>System ID</td><td>OS version, hostname, architecture</td><td><code>uname()</code>, <code>sysinfo(SI_ISALIST)</code>, <code>sysinfo(SI_PLATFORM)</code></td></tr>
+            <tr><td>Hardware</td><td>CPU, memory, disk stats</td><td><code>kstat_open()</code>, <code>kstat_read()</code>, <code>/proc</code>, <code>prtconf</code>, <code>prtdiag</code></td></tr>
+            <tr><td>Network</td><td>IPs, interfaces, routes</td><td><code>getifaddrs()</code>, <code>ioctl(SIOCGIFCONF)</code>, socket APIs</td></tr>
+            <tr><td>Filesystem</td><td>Mounts, usage, ZFS</td><td><code>statvfs()</code>, <code>getmntent()</code>, <code>libzfs</code> queries</td></tr>
+            <tr><td>Packages</td><td>SW inventory</td><td>IPS: <code>pkg list</code> parsing; SVR4: <code>pkginfo</code></td></tr>
+            <tr><td>Processes</td><td>Running procs</td><td><code>/proc/&lt;pid&gt;/psinfo</code> reading (Solaris procfs)</td></tr>
+            <tr><td>Services</td><td>SMF control</td><td><code>svcs -a</code> parsing, <code>svcadm</code> for remediation</td></tr>
+            <tr><td>Patching</td><td>SRU deploy + rollback</td><td><code>pkg update --accept --be-name</code> + <code>beadm</code></td></tr>
+            <tr><td>File scan</td><td>SW discovery, hashing</td><td><code>opendir()/readdir()</code> + SHA-256 via <code>libmd</code></td></tr>
+            <tr><td>Virtualization</td><td>LDom detection</td><td><code>ldm list</code> parsing, kstat virtualization data</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="expand" onclick="this.classList.toggle('open')">
+      <div class="expand-head">
+        <span class="expand-title">Patch Management — Boot Environment Rollback</span>
+        <span class="expand-meta">Unique in market</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="expand-body">
+        <div class="callout good"><strong>BigFix is the only product that creates a ZFS Boot Environment before patching.</strong> If patching fails, instant rollback via <code>beadm activate &lt;old_BE&gt;</code>. No competitor implements this.</div>
+        <p><strong>1.</strong> HCL maintains a "Patches for Solaris 11" Fixlet site mapping Oracle SRU releases to Fixlets.</p>
+        <p><strong>2.</strong> Download plug-in authenticates with Oracle’s support repo. Air-gapped: Solaris Download Cacher tool.</p>
+        <p><strong>3.</strong> IPS Repository Management dashboard configures local mirrors to reduce download time.</p>
+        <p><strong>4.</strong> Agent creates Boot Environment → <code>pkg update</code> → verify → rollback on failure.</p>
+        <p><strong>5.</strong> Relevance expressions verify installed SRU matches target. Non-compliant endpoints reported.</p>
+        <p><strong>Compliance:</strong> DISA STIG Solaris 11 V3R2 (SPARC + X86) updated June 2025. CIS benchmarks available. All native C++ — no JRE required.</p>
+      </div>
+    </div>
+
+    <div class="expand" onclick="this.classList.toggle('open')">
+      <div class="expand-head">
+        <span class="expand-title">Installation on Solaris 11</span>
+        <span class="expand-meta">.p5p since v9.5.13</span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="expand-body">
+        <p><strong>Prereq:</strong> SUNWlibC package.</p>
+        <p><strong>Standard install:</strong> <code>pkg install -g BESAgent-*.p5p BESagent</code></p>
+        <p><strong>Global zone with children:</strong> Create local repo → <code>pkgrepo create /var/opt/BESClient_solaris_repo</code> → <code>pkgrecv -s BESAgent-*.p5p -d repo BESagent</code> → <code>pkg set-publisher --search-first -p repo</code></p>
+        <p><strong>Upgrade:</strong> Self-updating via Fixlet. <strong>Config:</strong> <code>/etc/opt/BESClient/actionsite.afxm</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 3: TANIUM ═══════════ -->
+<section id="tanium" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 03 — Deep Dive</div>
+    <h2><span>Tanium</span></h2>
+    <p>Founded 2007 by Orion Hindawi (co-founded BigFix). Rebuilt from scratch for speed. Patented P2P linear chain architecture.</p>
+
+    <div class="pills">
+      <div class="pill"><div class="dot" style="background:var(--vi)"></div>C/C++ Agent</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>Sol 10u11+ (SPARC &amp; x86)</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>Sol 11 (SPARC &amp; x86)</div>
+      <div class="pill"><div class="dot" style="background:var(--cy)"></div>~15–20 MB (smallest)</div>
+      <div class="pill"><div class="dot" style="background:var(--cy)"></div>~20–50 MB RSS</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>SMF: taniumclient</div>
+      <div class="pill"><div class="dot" style="background:var(--am)"></div>JRE for Comply</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>15+ loadable modules</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>Code-signed CX extensions</div>
+    </div>
+
+    <div class="expand" onclick="this.classList.toggle('open')">
+      <div class="expand-head"><span class="expand-title">Architecture — Linear Chain P2P</span><span class="expand-meta">&lt;15 sec for millions</span><span class="expand-icon">▼</span></div>
+      <div class="expand-body">
+        <p>Agents form a <strong>dynamic linear chain</strong>. Server sends query to leader agents → leaders forward to neighbors → neighbors forward to theirs. Results aggregate back up the chain with summarization at each node. On Solaris, uses POSIX sockets (<code>socket()</code>, <code>connect()</code>, <code>send()</code>, <code>recv()</code>) over TCP.</p>
+        <p><strong>Modular design:</strong> Single core binary + signed Client Extensions (CX). Each module (Discover, Asset, Comply, etc.) ships as a <code>.so</code> shared object or script package. Agent verifies digital signatures before loading.</p>
+      </div>
+    </div>
+
+    <div class="expand" onclick="this.classList.toggle('open')">
+      <div class="expand-head"><span class="expand-title">Module Support on Solaris</span><span class="expand-meta">15 modules — varying support</span><span class="expand-icon">▼</span></div>
+      <div class="expand-body">
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Module</th><th>Purpose</th><th>Solaris</th><th>Limitation</th></tr></thead>
+          <tbody>
+            <tr><td>Interact</td><td>Real-time queries</td><td class="y">✅ Full</td><td>Core platform</td></tr>
+            <tr><td>Asset</td><td>HW/SW inventory</td><td class="y">✅ Full</td><td>kstat, procfs, pkg</td></tr>
+            <tr><td>Discover</td><td>Network discovery</td><td class="w">⚠ Level 2</td><td>Nmap unsupported; ARP/ping only</td></tr>
+            <tr><td>Comply</td><td>Compliance/vuln</td><td class="y">✅ Yes</td><td>Requires Oracle JRE 8 upload</td></tr>
+            <tr><td>Patch</td><td>OS patching</td><td class="w">⚠ Limited</td><td>Basic pkg; less automated</td></tr>
+            <tr><td>Deploy</td><td>SW deployment</td><td class="y">✅ Yes</td><td>Packages, scripts, files</td></tr>
+            <tr><td>Enforce</td><td>Config policy</td><td class="w">⚠ Limited</td><td>Primarily Win/Linux CX</td></tr>
+            <tr><td>Threat Response</td><td>EDR</td><td class="n">❌ No</td><td>NOT on Solaris</td></tr>
+            <tr><td>Impact</td><td>Lateral movement</td><td class="n">❌ No</td><td>Win/Linux only</td></tr>
+            <tr><td>Integrity Monitor</td><td>FIM</td><td class="w">⚠ Basic</td><td>Hash only; no real-time</td></tr>
+            <tr><td>Reveal</td><td>DLP</td><td class="n">❌ No</td><td>Win/Linux/macOS only</td></tr>
+            <tr><td>Performance</td><td>Monitoring</td><td class="w">⚠ Limited</td><td>Basic CPU/mem</td></tr>
+            <tr><td>Map</td><td>Topology</td><td class="n">❌ No</td><td>Not on Solaris</td></tr>
+            <tr><td>Trends</td><td>Historical</td><td class="y">✅ Yes</td><td>Server-side</td></tr>
+            <tr><td>Connect</td><td>SIEM export</td><td class="y">✅ Yes</td><td>Server-side</td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout warn"><strong>JRE Dependency:</strong> Amazon Corretto (bundled default) does not support Solaris. Must manually upload Oracle JRE 8 for OVAL/SCAP compliance scanning.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 4: IVANTI ═══════════ -->
+<section id="ivanti" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 04 — Deep Dive</div>
+    <h2><span>Ivanti</span> Endpoint Manager</h2>
+    <p>Descends from LANDesk (1990s). Weakest Solaris support — primarily inventory visibility.</p>
+    <div class="pills">
+      <div class="pill"><div class="dot" style="background:var(--or)"></div>C/C++ Agent</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>Sol 10+ (SPARC &amp; x86)</div>
+      <div class="pill"><div class="dot" style="background:var(--cy)"></div>~30–40 MB</div>
+      <div class="pill"><div class="dot" style="background:var(--cy)"></div>~40–80 MB RSS</div>
+      <div class="pill"><div class="dot" style="background:var(--gn)"></div>No JRE</div>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Feature</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>HW inventory</td><td class="y">✅ Yes</td><td>prtconf, kstat</td></tr>
+        <tr><td>SW inventory</td><td class="y">✅ Yes</td><td>pkginfo + pkg list</td></tr>
+        <tr><td>SW distribution</td><td class="y">✅ Yes</td><td>Script-based</td></tr>
+        <tr><td>Patch mgmt</td><td class="w">⚠ Very limited</td><td>No pre-built content</td></tr>
+        <tr><td>Remote control</td><td class="w">⚠ Basic VNC</td><td>Limited vs Windows</td></tr>
+        <tr><td>Compliance</td><td class="w">⚠ Basic</td><td>Policy checks; no SCAP</td></tr>
+        <tr><td>Vuln scanning</td><td class="n">❌ No</td><td>—</td></tr>
+        <tr><td>EDR</td><td class="n">❌ No</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout bad"><strong>Assessment:</strong> Ivanti is the weakest competitor on Solaris. Exists primarily for organizations needing basic visibility alongside Windows/Linux in one console.</div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 5: HEAD-TO-HEAD ═══════════ -->
+<section id="h2h" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 05</div>
+    <h2>Head-to-<span>Head</span></h2>
+
+    <h3>Feature Coverage Score</h3>
+    <div style="max-width:550px;margin:1.2rem 0">
+      <div class="bar-row"><div class="bar-label">BigFix</div><div class="bar-track"><div class="bar-fill bar-bf" data-w="78%">14 / 18</div></div></div>
+      <div class="bar-row"><div class="bar-label">Tanium</div><div class="bar-track"><div class="bar-fill bar-tn" data-w="67%">12 / 18</div></div></div>
+      <div class="bar-row"><div class="bar-label">Ivanti</div><div class="bar-track"><div class="bar-fill bar-iv" data-w="39%">7 / 18</div></div></div>
+    </div>
+
+    <h3>Complete Feature Matrix</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Feature</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead>
+      <tbody>
+        <tr><td>Min Solaris</td><td>11</td><td>10u11</td><td>10</td></tr>
+        <tr><td>Agent size</td><td>40–50 MB</td><td class="y">15–20 MB</td><td>30–40 MB</td></tr>
+        <tr><td>Query speed</td><td>Minutes</td><td class="y">Seconds</td><td>Minutes</td></tr>
+        <tr><td>Communication</td><td>HTTPS relay</td><td>TCP P2P chain</td><td>HTTPS C/S</td></tr>
+        <tr><td>HW inventory</td><td class="y">✅ Full</td><td class="y">✅ Full</td><td class="y">✅ Full</td></tr>
+        <tr><td>SW inventory</td><td class="y">✅ IPS+SVR4</td><td class="y">✅ IPS+SVR4</td><td class="y">✅ IPS+SVR4</td></tr>
+        <tr><td>SRU patching</td><td class="y">✅ Full+BE</td><td class="w">⚠ Basic</td><td class="n">❌ Manual</td></tr>
+        <tr><td>CIS/STIG</td><td class="y">✅ Native</td><td class="w">⚠ SCAP+JRE</td><td class="w">⚠ Basic</td></tr>
+        <tr><td>Vuln scan</td><td class="y">✅ CVE</td><td class="y">✅ OVAL</td><td class="n">❌ No</td></tr>
+        <tr><td>SW deploy</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr>
+        <tr><td>Remote exec</td><td class="y">✅</td><td class="y">✅</td><td class="w">⚠</td></tr>
+        <tr><td>Zone/LDom</td><td class="y">✅ LDom 2–3.4</td><td class="y">✅ zonename</td><td class="w">⚠ Partial</td></tr>
+        <tr><td>BE rollback</td><td class="y">✅ beadm</td><td class="n">❌</td><td class="n">❌</td></tr>
+        <tr><td>Remote ctrl</td><td class="y">✅ VNC</td><td class="w">⚠</td><td class="w">⚠</td></tr>
+        <tr><td>EDR</td><td class="n">❌</td><td class="n">❌</td><td class="n">❌</td></tr>
+        <tr><td>Real-time FIM</td><td class="n">❌</td><td class="w">⚠ Hash</td><td class="n">❌</td></tr>
+        <tr><td>DTrace</td><td class="n">❌</td><td class="n">❌</td><td class="n">❌</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 6: API DEEP DIVE ═══════════ -->
+<section id="apis" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 06</div>
+    <h2>Solaris <span>API</span> Deep Dive</h2>
+    <p>How each competitor’s agent interacts with Oracle Solaris at the C level:</p>
+
+    <div class="tabs" id="api-tabs">
+      <button class="tab active" onclick="switchTab(this,'api-panels','ap-sys')">System ID</button>
+      <button class="tab" onclick="switchTab(this,'api-panels','ap-hw')">Hardware</button>
+      <button class="tab" onclick="switchTab(this,'api-panels','ap-net')">Network</button>
+      <button class="tab" onclick="switchTab(this,'api-panels','ap-pkg')">Packages</button>
+      <button class="tab" onclick="switchTab(this,'api-panels','ap-svc')">Services</button>
+      <button class="tab" onclick="switchTab(this,'api-panels','ap-pat')">Patching</button>
+      <button class="tab" onclick="switchTab(this,'api-panels','ap-vir')">Virtualization</button>
+    </div>
+    <div id="api-panels">
+      <div class="tab-content active" id="ap-sys"><div class="tbl-wrap"><table><thead><tr><th>Function</th><th>Returns</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td><code>uname()</code></td><td>OS name, release, machine</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr><tr><td><code>sysinfo(SI_ISALIST)</code></td><td>Instruction set archs</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr><tr><td><code>sysinfo(SI_PLATFORM)</code></td><td>HW platform</td><td class="y">✅</td><td class="y">✅</td><td class="w">⚠</td></tr><tr><td><code>/etc/release</code></td><td>Full release + SRU</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr><tr><td><code>zonename</code></td><td>Zone identity</td><td class="y">✅</td><td class="y">✅</td><td class="w">⚠</td></tr></tbody></table></div></div>
+      <div class="tab-content" id="ap-hw"><div class="tbl-wrap"><table><thead><tr><th>Source</th><th>Data</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td><code>kstat_open/read</code></td><td>CPU, mem, disk, NIC</td><td class="y">✅</td><td class="y">✅</td><td class="w">⚠</td></tr><tr><td><code>prtconf</code></td><td>Device tree, phys mem</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr><tr><td><code>prtdiag</code></td><td>SPARC board layout</td><td class="y">✅</td><td class="w">⚠</td><td class="n">❌</td></tr><tr><td><code>/proc/pid/psinfo</code></td><td>Per-process stats</td><td class="y">✅</td><td class="y">✅</td><td class="w">⚠</td></tr><tr><td><code>statvfs()</code></td><td>FS capacity</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr></tbody></table></div></div>
+      <div class="tab-content" id="ap-net"><div class="tbl-wrap"><table><thead><tr><th>API</th><th>Data</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td><code>getifaddrs()</code></td><td>All interfaces + IPs</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr><tr><td><code>ioctl(SIOCGIFCONF)</code></td><td>Interface config</td><td class="y">✅</td><td class="y">✅</td><td class="w">⚠</td></tr><tr><td>POSIX sockets</td><td>Agent comms</td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr></tbody></table></div></div>
+      <div class="tab-content" id="ap-pkg"><div class="tbl-wrap"><table><thead><tr><th>System</th><th>API</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>IPS</td><td><code>pkg list -H</code></td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr><tr><td>SVR4</td><td><code>pkginfo -l</code></td><td class="y">✅</td><td class="y">✅</td><td class="y">✅</td></tr><tr><td>Repo mgmt</td><td><code>pkg set-publisher</code></td><td class="y">✅ Dashboard</td><td class="n">❌</td><td class="n">❌</td></tr></tbody></table></div></div>
+      <div class="tab-content" id="ap-svc"><div class="tbl-wrap"><table><thead><tr><th>Op</th><th>Tool</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>List</td><td><code>svcs -a</code></td><td class="y">✅</td><td class="y">✅</td><td class="w">⚠</td></tr><tr><td>Start/stop</td><td><code>svcadm</code></td><td class="y">✅</td><td class="y">✅</td><td class="n">❌</td></tr><tr><td>Properties</td><td><code>svccfg</code></td><td class="y">✅</td><td class="w">⚠</td><td class="n">❌</td></tr></tbody></table></div></div>
+      <div class="tab-content" id="ap-pat"><div class="tbl-wrap"><table><thead><tr><th>Capability</th><th>Method</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>SRU patching</td><td><code>pkg update</code></td><td class="y">✅ Fixlets</td><td class="w">⚠ Basic</td><td class="n">❌ Manual</td></tr><tr><td>BE rollback</td><td><code>beadm</code></td><td class="y">✅ Auto</td><td class="n">❌</td><td class="n">❌</td></tr><tr><td>Pre-built content</td><td>SRU→Fixlet</td><td class="y">✅ HCL site</td><td class="w">⚠</td><td class="n">❌</td></tr><tr><td>Air-gapped</td><td>Cacher tool</td><td class="y">✅</td><td class="w">⚠ Manual</td><td class="n">❌</td></tr></tbody></table></div></div>
+      <div class="tab-content" id="ap-vir"><div class="tbl-wrap"><table><thead><tr><th>Tech</th><th>Detection</th><th>BigFix</th><th>Tanium</th><th>Ivanti</th></tr></thead><tbody><tr><td>Zones</td><td><code>zonename</code></td><td class="y">✅ Global+NG</td><td class="y">✅ Global+NG</td><td class="w">⚠ Basic</td></tr><tr><td>LDoms</td><td><code>ldm list</code></td><td class="y">✅ 2.0–3.4</td><td class="w">⚠ Basic</td><td class="n">❌</td></tr><tr><td>Zone lifecycle</td><td><code>zonecfg/zoneadm</code></td><td class="n">❌ Detect</td><td class="n">❌ Detect</td><td class="n">❌</td></tr></tbody></table></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 7: GAPS ═══════════ -->
+<section id="gaps" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 07</div>
+    <h2>Feature <span>Gaps</span> — What Nobody Built</h2>
+    <p>Available on Windows/Linux in all three products but <strong>none implement on Solaris</strong>:</p>
+    <div class="card-grid">
+      <div class="card"><div class="card-tag tag-high">High Opportunity</div><h4>EDR / Threat Detection</h4><p>No competitor provides EDR on Solaris.</p><ul><li>API: <code>DTrace USDT probes</code> — app/kernel tracing</li><li>API: <code>Solaris Audit (BSM)</code> — security event trail</li><li>Detect privilege escalation, unauthorized access</li></ul></div>
+      <div class="card"><div class="card-tag tag-high">High Opportunity</div><h4>Real-time File Integrity Monitoring</h4><p>Tanium has hash-based; none do real-time kernel events.</p><ul><li>API: <code>port_associate(PORT_SOURCE_FILE)</code></li><li>Kernel-level — Solaris equivalent of inotify</li><li>Required for PCI DSS, HIPAA, SOX</li></ul></div>
+      <div class="card"><div class="card-tag tag-high">High Opportunity</div><h4>DTrace-based Monitoring</h4><p>Solaris’s most powerful observability tool — untapped.</p><ul><li>API: <code>libdtrace</code> C API</li><li>USDT probes — zero overhead when disabled</li><li>Production-safe application tracing</li></ul></div>
+      <div class="card"><div class="card-tag tag-high">High Opportunity</div><h4>Zone Lifecycle Management</h4><p>All detect; none manage create/clone/migrate/delete.</p><ul><li>APIs: <code>zonecfg</code>, <code>zoneadm</code>, <code>libzonecfg</code></li><li>Primary Solaris virtualization</li></ul></div>
+      <div class="card"><div class="card-tag tag-high">High Opportunity</div><h4>ZFS Snapshot Management</h4><p>No competitor manages ZFS from their console.</p><ul><li>API: <code>libzfs</code> C API</li><li>Trigger, schedule, manage snapshots/clones</li></ul></div>
+      <div class="card"><div class="card-tag tag-med">Medium Opportunity</div><h4>USB Device Control</h4><p>Available on Win/Linux — absent on Solaris.</p><ul><li>APIs: <code>devfsadm</code>, <code>syseventd</code></li><li>Different device model; dedicated work needed</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 8: IMPLEMENTATION ROADMAP ═══════════ -->
+<section id="roadmap" class="rv">
+  <div class="wrap">
+    <div class="section-label">Section 08</div>
+    <h2>Implementation <span>Roadmap</span></h2>
+    <p>If ManageEngine Endpoint Central starts fresh to build an Oracle Solaris agent, here is the complete path — tech stack, architecture decisions, and feature-by-feature implementation approach.</p>
+
+    <h3>Tech Stack Decision</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Decision</th><th>Choice</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Language</td><td><strong>C (C99 standard)</strong></td><td>Every competitor chose C/C++. Only language with SPARC+x86, all OS APIs, ABI guarantee, and zero runtime dependency.</td></tr>
+        <tr><td>Compiler</td><td><strong>GCC 12+ (both archs)</strong></td><td>Ships with Solaris 11.4 CBE. All 3 competitors use GCC. Test with Oracle Developer Studio for SPARC optimization.</td></tr>
+        <tr><td>Build system</td><td><strong>CMake + Make</strong></td><td>CMake for cross-platform config. Separate Makefiles for SPARC and x86-64 targets.</td></tr>
+        <tr><td>TLS library</td><td><strong>OpenSSL 3.x</strong></td><td>Ships with Solaris 11.4. All 3 competitors depend on OpenSSL for agent→server HTTPS.</td></tr>
+        <tr><td>Packaging</td><td><strong>IPS .p5p package</strong></td><td>Native Solaris 11 package format. BigFix uses .p5p since v9.5.13. Clean install/upgrade/uninstall via pkg.</td></tr>
+        <tr><td>Service mgmt</td><td><strong>SMF (svc.startd)</strong></td><td>All 3 competitors register as SMF services. Auto-restart on crash. Integration with Solaris service framework.</td></tr>
+        <tr><td>Communication</td><td><strong>HTTPS to EC server</strong></td><td>Reuse existing Endpoint Central server infrastructure. Agent polls or receives push via HTTPS.</td></tr>
+        <tr><td>Cross-platform</td><td><strong>#ifdef __sun / __sparc guards</strong></td><td>Standard pattern used by BigFix, Tanium, Ivanti. Platform-specific code behind preprocessor guards.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Codebase Architecture</h3>
+    <div class="codeblock"><span class="comment">// Recommended project structure (same pattern as BigFix/Tanium)</span>
+<span class="keyword">agent/</span>
+├── <span class="keyword">src/</span>
+│   ├── <span class="keyword">core/</span>                    <span class="comment">// Platform-independent</span>
+│   │   ├── <span class="func">agent_main.c</span>         <span class="comment">// Entry point, event loop</span>
+│   │   ├── <span class="func">communication.c</span>      <span class="comment">// HTTPS client, TLS, protocol</span>
+│   │   ├── <span class="func">scheduler.c</span>          <span class="comment">// Task scheduling, heartbeat</span>
+│   │   ├── <span class="func">config.c</span>             <span class="comment">// Configuration management</span>
+│   │   └── <span class="func">crypto.c</span>             <span class="comment">// Hashing, signing (OpenSSL)</span>
+│   ├── <span class="keyword">platform/solaris/</span>        <span class="comment">// Solaris-specific</span>
+│   │   ├── <span class="func">os_info.c</span>            <span class="comment">// uname(), sysinfo(), /etc/release</span>
+│   │   ├── <span class="func">hardware.c</span>           <span class="comment">// kstat for CPU/memory/disk</span>
+│   │   ├── <span class="func">network.c</span>            <span class="comment">// getifaddrs(), routing tables</span>
+│   │   ├── <span class="func">process.c</span>            <span class="comment">// /proc/pid/psinfo reading</span>
+│   │   ├── <span class="func">package.c</span>            <span class="comment">// IPS (pkg) + SVR4 (pkginfo)</span>
+│   │   ├── <span class="func">service.c</span>            <span class="comment">// SMF (svcs/svcadm) integration</span>
+│   │   ├── <span class="func">filesystem.c</span>         <span class="comment">// statvfs(), ZFS via libzfs</span>
+│   │   ├── <span class="func">zones.c</span>              <span class="comment">// zonename, zone detection</span>
+│   │   ├── <span class="func">patch.c</span>              <span class="comment">// pkg update + beadm rollback</span>
+│   │   ├── <span class="func">dtrace_probes.c</span>      <span class="comment">// Phase 3: USDT probes</span>
+│   │   ├── <span class="func">fim.c</span>                <span class="comment">// Phase 3: port_associate FIM</span>
+│   │   └── <span class="func">install.c</span>            <span class="comment">// Agent install/upgrade via IPS</span>
+│   ├── <span class="keyword">platform/linux/</span>          <span class="comment">// Reuse for Linux agent</span>
+│   └── <span class="keyword">platform/common/</span>         <span class="comment">// POSIX shared code</span>
+├── <span class="keyword">build/</span>
+│   ├── CMakeLists.txt
+│   ├── Makefile.solaris-sparc
+│   └── Makefile.solaris-x86
+└── <span class="keyword">pkg/</span>
+    └── solaris-ips/              <span class="comment">// .p5p package manifests</span></div>
+
+    <h3>Phased Implementation</h3>
+    <div class="timeline">
+      <div class="tl-item p1">
+        <div class="tl-title">Phase 1: Foundation MVP</div>
+        <div class="tl-time">3–4 months — Achieves parity with Ivanti</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Agent Daemon</h4><p>C99, SMF-managed, HTTPS to EC server</p><ul><li>SMF manifest for auto-start/restart</li><li>OpenSSL TLS 1.2+ for secure communication</li><li>Configurable heartbeat interval</li><li>Graceful shutdown via SIGTERM handler</li></ul></div>
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Hardware Inventory</h4><p>CPU, memory, disk, NIC, SPARC model</p><ul><li><code>kstat_open()/kstat_read()</code> for CPU/mem/disk</li><li><code>prtconf</code> for device tree</li><li><code>prtdiag</code> for SPARC board layout</li><li><code>/proc</code> for process information</li></ul></div>
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Software Inventory</h4><p>IPS + SVR4 packages + file scan</p><ul><li><code>pkg list -H</code> for IPS packages</li><li><code>pkginfo -l</code> for SVR4 legacy</li><li><code>opendir()/readdir()</code> filesystem scan</li><li>SHA-256 hashing via <code>libmd</code></li></ul></div>
+      <div class="card"><div class="card-tag tag-phase">Phase 1</div><h4>Network &amp; OS Info</h4><p>IPs, interfaces, OS version, Zone detect</p><ul><li><code>getifaddrs()</code> for all interfaces</li><li><code>uname()/sysinfo()</code> for OS identification</li><li><code>zonename</code> for zone detection</li><li>IPS .p5p packaging for deployment</li></ul></div>
+    </div>
+
+    <div class="timeline" style="margin-top:2rem">
+      <div class="tl-item p2">
+        <div class="tl-title">Phase 2: Patch &amp; Compliance</div>
+        <div class="tl-time">3–4 months — Matches HCL BigFix</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>SRU Patch Management</h4><p>Automated IPS patching with rollback</p><ul><li><code>pkg update --accept --be-name</code></li><li>ZFS Boot Environment creation before patching</li><li><code>beadm activate</code> for rollback on failure</li><li>SRU level verification after patching</li></ul></div>
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Compliance Scanning</h4><p>CIS/STIG via native C engine</p><ul><li>Native compliance engine in C — NO JRE (beats Tanium)</li><li>CIS Solaris 11 benchmark checks</li><li>DISA STIG V3R2 evaluation</li><li>Custom policy support</li></ul></div>
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Vulnerability Assessment</h4><p>CVE matching against packages</p><ul><li>Map installed IPS packages to CVE database</li><li>Severity scoring and reporting</li><li>Auto-remediation via patch deployment</li></ul></div>
+      <div class="card"><div class="card-tag tag-p2">Phase 2</div><h4>Service &amp; SW Management</h4><p>SMF control + software deployment</p><ul><li><code>svcs/svcadm/svccfg</code> for SMF</li><li><code>pkg install</code> for IPS deployment</li><li>Script deployment + remote execution</li></ul></div>
+    </div>
+
+    <div class="timeline" style="margin-top:2rem">
+      <div class="tl-item p3">
+        <div class="tl-title">Phase 3: Market Differentiation</div>
+        <div class="tl-time">4–6 months — Features NO competitor has</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>DTrace Integration</h4><p>Production-safe application/kernel tracing</p><ul><li>Embed USDT probes in agent binary</li><li><code>libdtrace</code> C API for probe management</li><li>Zero overhead when probes disabled</li><li>Enable tracing from EC console</li></ul></div>
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>Real-time FIM</h4><p>Kernel-level file change monitoring</p><ul><li><code>port_associate(PORT_SOURCE_FILE)</code></li><li>Event port for file modify/delete/rename</li><li>Solaris equivalent of Linux inotify</li><li>PCI DSS / HIPAA compliance requirement</li></ul></div>
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>Zone Lifecycle Management</h4><p>Full zone control from EC console</p><ul><li><code>zonecfg</code> for zone configuration</li><li><code>zoneadm install/boot/halt/clone</code></li><li><code>libzonecfg</code> for programmatic access</li><li>Zone migration between hosts</li></ul></div>
+      <div class="card"><div class="card-tag tag-p3">Phase 3 — Unique</div><h4>ZFS Snapshots + Solaris Audit</h4><p>Data protection + security events</p><ul><li><code>libzfs</code> for snapshot/clone management</li><li>Schedule automated ZFS snapshots</li><li>BSM audit trail parsing for security</li><li>Alert on privilege escalation, login failures</li></ul></div>
+    </div>
+
+    <h3>Feature Implementation Approach</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Feature</th><th>Solaris API</th><th>C Implementation Approach</th><th>Phase</th></tr></thead>
+      <tbody>
+        <tr><td>HW Inventory</td><td><code>kstat</code></td><td><code>kstat_open()</code> → iterate chains → <code>kstat_read()</code> for cpu_info, unix:system_pages, sd (disk)</td><td>P1</td></tr>
+        <tr><td>SW Inventory</td><td><code>pkg/pkginfo</code></td><td><code>popen("pkg list -H")</code> parse output; <code>popen("pkginfo -l")</code> for SVR4</td><td>P1</td></tr>
+        <tr><td>Network Config</td><td>Sockets</td><td><code>getifaddrs()</code> iterate linked list; extract AF_INET/AF_INET6 addresses, flags, masks</td><td>P1</td></tr>
+        <tr><td>Process List</td><td><code>/proc</code></td><td>Scan <code>/proc/</code> dirs; read <code>psinfo_t</code> struct from <code>/proc/pid/psinfo</code></td><td>P1</td></tr>
+        <tr><td>Zone Detection</td><td>zonename</td><td><code>getzonenamebyid()</code> or <code>popen("zonename")</code>; check <code>/etc/zones/</code></td><td>P1</td></tr>
+        <tr><td>SRU Patching</td><td>IPS</td><td><code>system("beadm create backup_BE")</code> → <code>system("pkg update --accept")</code> → verify → rollback on error</td><td>P2</td></tr>
+        <tr><td>SMF Control</td><td>SMF</td><td><code>popen("svcs -a -H -o fmri,state")</code>; <code>system("svcadm enable/disable fmri")</code></td><td>P2</td></tr>
+        <tr><td>Compliance</td><td>Multiple</td><td>Native C check engine: read config files, compare against CIS/STIG rules, report deviations</td><td>P2</td></tr>
+        <tr><td>DTrace Probes</td><td><code>libdtrace</code></td><td><code>dtrace_open()</code> → <code>dtrace_program_strcompile()</code> → <code>dtrace_go()</code>; consumer callback for events</td><td>P3</td></tr>
+        <tr><td>Real-time FIM</td><td>Event Ports</td><td><code>port_create()</code> → <code>port_associate(PORT_SOURCE_FILE, path)</code> → <code>port_get()</code> event loop</td><td>P3</td></tr>
+        <tr><td>Zone Lifecycle</td><td><code>libzonecfg</code></td><td><code>zonecfg_get_handle()</code> for config; <code>system("zoneadm -z name install/boot/halt")</code></td><td>P3</td></tr>
+        <tr><td>ZFS Snapshots</td><td><code>libzfs</code></td><td><code>libzfs_init()</code> → <code>zfs_open()</code> → <code>zfs_snapshot()</code>; list/destroy via libzfs handles</td><td>P3</td></tr>
+        <tr><td>BSM Audit</td><td>Solaris Audit</td><td>Read <code>/var/audit/</code> trail files; parse BSM token records; filter for security events</td><td>P3</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<footer>
+  <p>Solaris Endpoint Agent — Competitor Intelligence &amp; Implementation Guide</p>
+  <p>Based on HCL BigFix 11.0 · Tanium Cloud 2024 · Ivanti Neurons 2024 · Oracle Solaris 11.4 SRU 81 CBE</p>
+  <p style="margin-top:.5rem;font-size:.7rem;color:#3a4a6a">March 2026 · UEMS Agent Framework Research · Zoho Corporation</p>
+</footer>
 
 <script>
-document.querySelectorAll('.rv').forEach(el=>new IntersectionObserver(([e])=>{if(e.isIntersecting)e.target.classList.add('vis')},{threshold:.08}).observe(el));
-window.addEventListener('scroll',()=>{document.getElementById('tn').classList.toggle('sc',scrollY>20)});
-const secs=document.querySelectorAll('sec,.hero'),lks=document.querySelectorAll('.nk a');
-window.addEventListener('scroll',()=>{let c='';secs.forEach(s=>{if(scrollY>=s.offsetTop-100)c=s.id});lks.forEach(a=>a.classList.toggle('ac',a.getAttribute('href')==='#'+c))});
-function st(tg,cg,tid){document.getElementById(tg).querySelectorAll('.tab').forEach(t=>t.classList.remove('ac'));event.target.classList.add('ac');document.getElementById(cg).querySelectorAll('.tc').forEach(c=>c.classList.remove('ac'));document.getElementById(tid).classList.add('ac')}
-new IntersectionObserver(([e])=>{if(e.isIntersecting)e.target.querySelectorAll('.bf').forEach(b=>b.style.width=b.dataset.w)},{threshold:.3}).observe(document.getElementById('h2h'));
+// Scroll reveal
+document.querySelectorAll('.rv').forEach(el => {
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) e.target.classList.add('vis');
+  }, { threshold: 0.06 }).observe(el);
+});
+
+// Nav scroll shadow
+window.addEventListener('scroll', () => {
+  document.getElementById('topnav').classList.toggle('sc', scrollY > 20);
+});
+
+// Active nav link
+const allSections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  allSections.forEach(s => { if (scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+});
+
+// Tabs
+function switchTab(btn, panelContainerId, targetId) {
+  btn.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelContainerId).querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(targetId).classList.add('active');
+}
+
+// Animated bars
+new IntersectionObserver(([e]) => {
+  if (e.isIntersecting) {
+    e.target.querySelectorAll('.bar-fill').forEach(bar => { bar.style.width = bar.dataset.w; });
+  }
+}, { threshold: 0.2 }).observe(document.getElementById('h2h'));
 </script>
 </body>
 </html>
